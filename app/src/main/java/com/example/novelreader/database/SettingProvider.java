@@ -13,17 +13,35 @@ import androidx.annotation.Nullable;
 
 public class SettingProvider extends ContentProvider {
 
-    private static final String AUTHORITY = "com.example.novelreader";
+    private static final String AUTHORITY = "com.example.novelreader.setting";
     private static final String PATH = "data";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + PATH);
+
 
     private SQLiteDatabase database;
 
     @Override
     public boolean onCreate() {
-        DataBaseProviderHelper providerHelper = new DataBaseProviderHelper(getContext());
+        SettingHelper providerHelper = new SettingHelper(getContext());
         database = providerHelper.getWritableDatabase();
+
+        insertInitialData();
+
         return (database != null);
+    }
+
+    public void insertInitialData() {
+        Cursor cursor = database.query("setting", null, null, null, null, null, null);
+        if(cursor.getCount() == 0) {
+            ContentValues values = new ContentValues();
+            values.put("only", "only");
+            values.put("textSize", "15");
+            values.put("textColor", "#AAAAAA");
+
+
+            database.insert("setting", null, values);
+        }
+        cursor.close();
     }
 
     @Nullable

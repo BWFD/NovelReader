@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 
 public class BookMarkProvider extends ContentProvider {
 
-    private static final String AUTHORITY = "com.example.novelreader";
+    private static final String AUTHORITY = "com.example.novelreader.bookmark";
     private static final String PATH = "data";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + PATH);
 
@@ -22,7 +22,7 @@ public class BookMarkProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        DataBaseProviderHelper providerHelper = new DataBaseProviderHelper(getContext());
+        BookMarkProviderHelper providerHelper = new BookMarkProviderHelper(getContext());
         database = providerHelper.getWritableDatabase();
         return (database != null);
     }

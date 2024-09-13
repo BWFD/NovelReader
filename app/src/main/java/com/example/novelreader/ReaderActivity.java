@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,9 +37,14 @@ public class ReaderActivity extends AppCompatActivity {
     private Button nextButton;
     private String[] book;
     String url;
-    Uri uri = Uri.parse("content://com.example.novelreader/data");
+    Uri uri = Uri.parse("content://com.example.novelreader.bookmark/data");
+    Uri setting = Uri.parse("content://com.example.novelreader.setting/data");
     private boolean isFirst = true;
     int index;
+    private Button settingButton;
+
+    String textSize="15";
+    String textColor="#AAAAAA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +60,21 @@ public class ReaderActivity extends AppCompatActivity {
         textView = findViewById(R.id.chapterContext);
         prevButton = findViewById(R.id.prevButton);
         nextButton = findViewById(R.id.nextButton);
+        settingButton = findViewById(R.id.settingButton);
         if(isFirst) {
             this.url = getIntent().getStringExtra("currentHtml");
             this.TOTALHTML = getIntent().getStringArrayListExtra("TOTALHTML");
             isFirst = false;
         }
+
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity, SettingActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -214,5 +230,26 @@ public class ReaderActivity extends AppCompatActivity {
             }
         });
         builder.create().show();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Cursor cursor = getContentResolver().query(setting,null,null,null,null);
+        if(cursor!=null) {
+            while(cursor.moveToNext()) {
+                int index = cursor.getColumnIndex("textSize");
+                if(index!=-1) {
+                    textSize = cursor.getString(index);
+                }
+                index = cursor.getColumnIndex("textColor");
+                if(index!=-1) {
+                    textColor = cursor.getString(index);
+                }
+            }
+        }
+        cursor.close();
+        textView.setTextColor(Color.parseColor(textColor));
+        textView.setTextSize(Integer.parseInt(textSize));
     }
 }

@@ -66,7 +66,7 @@
             app:cornerRadius="0dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="75dp"
+            android:layout_marginLeft="50dp"
             />
 
         <Button
@@ -80,9 +80,23 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:cornerRadius="0dp"
-            android:layout_marginRight="75dp"
-
+            android:layout_marginRight="50dp"
             />
+
+        <Button
+            android:id="@+id/settingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="設定"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/cardview_shadow_start_color"
+            app:cornerRadius="0dp"
+            app:layout_constraintEnd_toStartOf="@+id/nextButton"
+            app:layout_constraintStart_toEndOf="@id/prevButton"
+            app:layout_constraintTop_toTopOf="@id/prevButton"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

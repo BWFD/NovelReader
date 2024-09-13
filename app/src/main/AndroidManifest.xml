@@ -42,12 +42,13 @@
 
         <provider
             android:name=".database.BookMarkProvider"
-            android:authorities="com.example.novelreader"
+            android:authorities="com.example.novelreader.bookmark"
             android:exported="true"
             android:grantUriPermissions="true" />
+
         <provider
             android:name=".database.SettingProvider"
-            android:authorities="com.example.novelreader"
+            android:authorities="com.example.novelreader.setting"
             android:exported="true"
             android:grantUriPermissions="true" />
     </application>

@@ -34,7 +34,7 @@ import java.util.List;
 public class BookMarkFragment extends Fragment {
     View view;
     private LinearLayout bookmarkList;
-    Uri uri = Uri.parse("content://com.example.novelreader/data");
+    Uri uri = Uri.parse("content://com.example.novelreader.bookmark/data");
     Cursor cursor;
 
     @Override

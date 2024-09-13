@@ -20,7 +20,7 @@ public class ChapterListAdapter extends ArrayAdapter<String> {
     Context context;
     List<String> name;
     List<String> html;
-    Uri uri = Uri.parse("content://com.example.novelreader/data");
+    Uri uri = Uri.parse("content://com.example.novelreader.bookmark/data");
     Cursor cursor;
     String bookName;
 
