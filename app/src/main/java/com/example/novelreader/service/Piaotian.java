@@ -289,8 +289,10 @@ public class Piaotian {
 
             book[0] = list[0].split("</h1>")[0].split("</a>")[15];
             book[1] = "";
-            for(int i=1;i<list.length-7;i++) {
-                book[1] = book[1] + list[i].replace("&nbsp;&nbsp;&nbsp;&nbsp;","\t").replace("\n","").replace("&#x2003;&#x2003;"," ") + "\n";
+            for(int i=1;i<list.length;i++) {
+                if(list[i].startsWith("&nbsp;")) {
+                    book[1] = book[1] + list[i].replace("&nbsp;&nbsp;&nbsp;&nbsp;", "\t").replace("\n", "").replace("&#x2003;&#x2003;", " ").split("<!-")[0] + "\n\n";
+                }
             }
             book[0] = Translate.chs2cht(book[0]);
             book[1] = Translate.chs2cht(book[1]);
