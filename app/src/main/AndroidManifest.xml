@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NovelReader"
         tools:targetApi="31">
+        <activity
+            android:name=".SettingActivity"
+            android:exported="false" />
         <activity
             android:name=".ReaderActivity"
             android:exported="false" />
@@ -37,13 +39,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
         <provider
-            android:authorities="com.example.novelreader"
             android:name=".database.BookMarkProvider"
+            android:authorities="com.example.novelreader"
             android:exported="true"
-            android:grantUriPermissions="true"/>
-        
+            android:grantUriPermissions="true" />
+        <provider
+            android:name=".database.SettingProvider"
+            android:authorities="com.example.novelreader"
+            android:exported="true"
+            android:grantUriPermissions="true" />
     </application>
 
 </manifest>

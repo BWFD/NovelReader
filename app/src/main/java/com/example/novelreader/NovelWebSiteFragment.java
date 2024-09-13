@@ -31,6 +31,8 @@ public class NovelWebSiteFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+
+
                 //getContext().getContentResolver().delete(uri,null,null);
                 Intent intent = new Intent(getActivity(), PiaotianInfoActivity.class);
                 startActivity(intent);

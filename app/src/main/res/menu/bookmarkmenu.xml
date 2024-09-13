@@ -3,4 +3,9 @@
     <item
         android:id="@+id/deleteMark"
         android:title="刪除此書籤" />
+
+    <item
+        android:id="@+id/openBook"
+        android:title="開啟此書籍" />
+
 </menu>

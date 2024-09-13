@@ -205,6 +205,9 @@ public class Piaotian {
 
     public static PiaotianBookDetail getBookDetail(String url) throws IOException {
         PiaotianBookDetail book = new PiaotianBookDetail();
+        if(url.startsWith("CHAPTER:")) {
+            url = getBookInfoByChapter(url.replace("CHAPTER:",""));
+        }
 
         Request request = new Request.Builder()
                 .url(url)
@@ -225,7 +228,14 @@ public class Piaotian {
                             element -> element.select("a").attr("href").endsWith(".jpg"))
                     .findAny().get().select("a").attr("href"));
 
-            String basicURL = elements.get(17).select("a").attr("href");
+            String tempUrl = elements.get(17).select("a").attr("href");
+            String basicURL;
+            if(tempUrl.startsWith("/html")) {
+                basicURL = "https://www.piaotia.com" + tempUrl;
+            }
+            else {
+                basicURL = tempUrl;
+            }
             request = new Request.Builder()
                     .url(basicURL)
                     .build();
@@ -293,4 +303,21 @@ public class Piaotian {
         return book;
     }
 
+
+    public static String getBookInfoByChapter(String url) throws IOException {
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Response response = client.newCall(request).execute();
+        Document document = null;
+        if(response.isSuccessful()){
+            document = Jsoup.parse(response.body().byteStream(), "GBK", url);
+        }
+        else {
+            System.out.println("Request failed with code: " + response.code());
+        }
+
+        return document.select("a").get(1).attr("href");
+    }
 }

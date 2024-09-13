@@ -38,7 +38,7 @@ public class ReaderActivity extends AppCompatActivity {
     String url;
     Uri uri = Uri.parse("content://com.example.novelreader/data");
     private boolean isFirst = true;
-
+    int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,15 +65,6 @@ public class ReaderActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 // 當用戶按下返回按鈕時，顯示彈窗
                 if(getIntent().getStringExtra("isInBookMark").equals("true")) {
-
-                    ContentValues values = new ContentValues();
-                    values.put("chapterName",book[0]);
-                    values.put("chapterUrl",url);
-                    System.out.println(url);
-                    String[] selectionArgs = new String[]{getIntent().getStringExtra("bookName")};
-
-                    getContentResolver().update(uri, values, "bookName = ?",selectionArgs);
-                    getContentResolver().notifyChange(uri, null);
                     finish();
                 }
                 else {
@@ -83,23 +74,23 @@ public class ReaderActivity extends AppCompatActivity {
         });
 
 
-        int index = 0;
-        for(int i=0;i<TOTALHTML.size() - 1; i++) {
+        index = 0;
+        for(int i=0;i<TOTALHTML.size(); i++) {
             if(TOTALHTML.get(i).equals(url)) {
                 index = i;
                 break;
             }
         }
-
+        System.out.println(index);
+        System.out.println(TOTALHTML.size());
         if(index == 0) {
             prevButton.setBackgroundColor(Color.WHITE);
 
-            int finalIndex = index;
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(activity,ReaderActivity.class);
-                    intent.putExtra("currentHtml", TOTALHTML.get(finalIndex + 1));
+                    intent.putExtra("currentHtml", TOTALHTML.get(index + 1));
                     intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
@@ -112,12 +103,11 @@ public class ReaderActivity extends AppCompatActivity {
         if(index == TOTALHTML.size() -1 ){
             nextButton.setBackgroundColor(Color.WHITE);
 
-            int finalIndex = index;
             prevButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(activity,ReaderActivity.class);
-                    intent.putExtra("currentHtml", TOTALHTML.get(finalIndex - 1));
+                    intent.putExtra("currentHtml", TOTALHTML.get(index - 1));
                     intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
@@ -127,12 +117,11 @@ public class ReaderActivity extends AppCompatActivity {
             });
         }
         else {
-            int finalIndex = index;
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(activity,ReaderActivity.class);
-                    intent.putExtra("currentHtml", TOTALHTML.get(finalIndex + 1));
+                    intent.putExtra("currentHtml", TOTALHTML.get(index + 1));
                     intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
@@ -145,7 +134,7 @@ public class ReaderActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(activity,ReaderActivity.class);
-                    intent.putExtra("currentHtml", TOTALHTML.get(finalIndex - 1));
+                    intent.putExtra("currentHtml", TOTALHTML.get(index - 1));
                     intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
@@ -181,6 +170,14 @@ public class ReaderActivity extends AppCompatActivity {
                         else {
                             textView.setText(book[1]);
                         }
+
+                        ContentValues values = new ContentValues();
+                        values.put("chapterName",book[0]);
+                        values.put("chapterUrl",url);
+                        String[] selectionArgs = new String[]{getIntent().getStringExtra("bookName")};
+
+                        getContentResolver().update(uri, values, "bookName = ?",selectionArgs);
+                        getContentResolver().notifyChange(uri, null);
                     }
                 });
             }

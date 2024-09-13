@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ public class PiaotianBookInfoActivity extends AppCompatActivity {
     private TextView bookDesc;
     private ListView chapterList;
     private ChapterListAdapter chapterListAdapter;
+    private TextView loading;
 
     private final Executor executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -62,6 +64,7 @@ public class PiaotianBookInfoActivity extends AppCompatActivity {
         bookDesc = findViewById(R.id.bookDesc);
         chapterList = findViewById(R.id.chapterList);
         bookInfo = new PiaotianBookDetail();
+        loading = findViewById(R.id.Loading);
 
 
         getBookInfo(url);
@@ -91,7 +94,7 @@ public class PiaotianBookInfoActivity extends AppCompatActivity {
 
                         chapterListAdapter.notifyDataSetChanged();
                         chapterList.invalidateViews();
-
+                        loading.setVisibility(View.INVISIBLE);
 
                     }
                 });

@@ -4,12 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class BookMarkProviderHelper extends SQLiteOpenHelper {
+public class DataBaseProviderHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "bookmark.db";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
-    public BookMarkProviderHelper(Context context) {
+    public DataBaseProviderHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -26,13 +26,22 @@ public class BookMarkProviderHelper extends SQLiteOpenHelper {
                         "TOTALHTML TEXT);"
         );
 
+        sqLiteDatabase.execSQL(
+                "CREATE TABLE setting (" +
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "textSize TEXT," +
+                        "textColor TEXT);"
+        );
+
+        sqLiteDatabase.execSQL(
+                "INSERT INTO setting(textSize, textColor)" +
+                "VALUES(\"15\", \"#AAAAAA\");");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS bookmark");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS bookChapter");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS bookmark");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS setting");
         onCreate(sqLiteDatabase);
     }
 }

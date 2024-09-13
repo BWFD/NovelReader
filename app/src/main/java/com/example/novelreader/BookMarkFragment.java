@@ -9,6 +9,8 @@ import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.example.novelreader.Piaotain.PiaotianBookInfoActivity;
 import com.example.novelreader.service.Piaotian;
 
 import java.io.IOException;
@@ -102,6 +105,7 @@ public class BookMarkFragment extends Fragment {
                 String url = "";
                 String bookName = "";
                 String TOTALHTML = "";
+                String webSite = "";
                 Button button = new Button(getActivity());
                 int index = cursor.getColumnIndex("bookName");
                 if (index != -1) {
@@ -110,7 +114,8 @@ public class BookMarkFragment extends Fragment {
                 }
                 index = cursor.getColumnIndex("webSite");
                 if (index != -1) {
-                    text = text + "-" + cursor.getString(index);
+                    webSite = cursor.getString(index);
+                    text = text + "-" + webSite;
                 }
                 index = cursor.getColumnIndex("chapterName");
                 if (index != -1) {
@@ -132,6 +137,7 @@ public class BookMarkFragment extends Fragment {
                 }
                 String finalUrl = url;
                 String finalBookName = bookName;
+                String finalWebSite = webSite;
                 index = cursor.getColumnIndex("TOTALHTML");
                 if (index != -1) {
                     TOTALHTML = cursor.getString(index);
@@ -165,6 +171,16 @@ public class BookMarkFragment extends Fragment {
                                     getContext().getContentResolver().delete(uri,"bookName = ?", new String[]{finalBookName});
                                     getContext().getContentResolver().notifyChange(uri, null);
                                     update();
+                                    return true;
+                                }
+                                else
+                                if(id == R.id.openBook) {
+                                    Intent intent;
+                                    if(finalWebSite.equals("飄天文學網")) {
+                                        intent = new Intent(getActivity(), PiaotianBookInfoActivity.class);
+                                        intent.putExtra("URL","CHAPTER:" + finalUrl);
+                                        startActivity(intent);
+                                    }
                                     return true;
                                 }
                                 else {
