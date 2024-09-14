@@ -97,8 +97,6 @@ public class ReaderActivity extends AppCompatActivity {
                 break;
             }
         }
-        System.out.println(index);
-        System.out.println(TOTALHTML.size());
         if(index == 0) {
             prevButton.setBackgroundColor(Color.WHITE);
 
