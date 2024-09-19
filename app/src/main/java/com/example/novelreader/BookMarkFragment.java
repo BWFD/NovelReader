@@ -84,7 +84,7 @@ public class BookMarkFragment extends Fragment {
                 bookmarkList.addView(bar);
             }
         }
-
+        cursor.close();
         return view;
     }
 
@@ -206,6 +206,7 @@ public class BookMarkFragment extends Fragment {
                 bookmarkList.addView(bar);
             }
         }
+        cursor.close();
         bookmarkList.invalidate();
     }
 }
