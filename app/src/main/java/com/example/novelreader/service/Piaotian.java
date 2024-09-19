@@ -185,11 +185,13 @@ public class Piaotian {
             if(Page >= MaxPage + 1){
                 return bookList;
             }
+            String header = "https://www.piaotia.com/";
+
             urlList.forEach(element -> {
                 Elements bookInfo = element.select("td");
                 if (bookInfo.size() > 1) {
                     bookList.add(new PiaotianClassification(
-                            bookInfo.get(0).select("a").attr("href"),
+                            bookInfo.get(0).select("a").attr("href").startsWith(header) ? bookInfo.get(0).select("a").attr("href") : header +  bookInfo.get(0).select("a").attr("href"),
                             Translate.chs2cht(bookInfo.get(0).text()),
                             Translate.chs2cht(bookInfo.get(2).text())
                     ));
@@ -208,6 +210,7 @@ public class Piaotian {
         if(url.startsWith("CHAPTER:")) {
             url = getBookInfoByChapter(url.replace("CHAPTER:",""));
         }
+        System.out.println(url);
 
         Request request = new Request.Builder()
                 .url(url)

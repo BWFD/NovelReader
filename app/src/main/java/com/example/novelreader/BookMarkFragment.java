@@ -44,7 +44,7 @@ public class BookMarkFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_book_mark, container, false);
         bookmarkList = view.findViewById(R.id.bookmarkList);
 
-        cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+        cursor = getContext().getContentResolver().query(uri, null, null, null, "_id DESC");
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 String text = "";
@@ -70,7 +70,6 @@ public class BookMarkFragment extends Fragment {
                 button.setGravity(Gravity.CENTER_VERTICAL);
                 button.setPadding(10,0,0,0);
                 button.setTextColor(Color.WHITE);
-
                 bookmarkList.addView(button);
 
                 View bar = new View(getActivity());
@@ -98,7 +97,7 @@ public class BookMarkFragment extends Fragment {
 
     public void update() {
         bookmarkList.removeAllViews();
-        cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+        cursor = getContext().getContentResolver().query(uri, null, null, null, "_id DESC");
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 String text = "";

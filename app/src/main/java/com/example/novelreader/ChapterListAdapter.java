@@ -66,6 +66,7 @@ public class ChapterListAdapter extends ArrayAdapter<String> {
                         }
                     }
                 }
+                cursor.close();
                 context.startActivity(intent);
             }
         });

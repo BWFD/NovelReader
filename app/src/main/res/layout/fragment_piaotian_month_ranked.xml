@@ -28,10 +28,12 @@
                     android:layout_height="match_parent"
                     android:fastScrollAlwaysVisible="false"
                     android:fastScrollEnabled="true"
-                    android:scrollbarStyle="outsideOverlay"
                     android:scrollbarSize="10dp"
+                    android:scrollbarStyle="outsideOverlay"
                     android:visibility="invisible"
-                    android:layout_marginBottom="150dp"/>
+                    android:layout_marginBottom="150dp"
+                    />
+
         </LinearLayout>
 
 </FrameLayout>
