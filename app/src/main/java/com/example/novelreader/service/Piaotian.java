@@ -160,7 +160,13 @@ public class Piaotian {
 
     public static List<PiaotianClassification> getBookListByUrl(String url,int Page) throws IOException {
         List<PiaotianClassification> bookList = new ArrayList<>();
-        String URL = url.replace("1.html",Page + ".html");
+        String URL = "";
+        if(url.contains("quanben")) {
+            URL = url + "?page=" + Page;
+        }
+        else {
+            URL = url.replace("1.html", Page + ".html");
+        }
 
         Request request = new Request.Builder()
                 .url(URL)
