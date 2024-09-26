@@ -320,6 +320,7 @@ public class Piaotian {
             System.out.println("Request failed with code: " + response.code());
         }
 
+        System.out.println(document.select("a").get(1).attr("href"));
         return document.select("a").get(1).attr("href");
     }
 }

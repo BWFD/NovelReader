@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.example.novelreader.CZBooks.CZBooksBookInfoActivity;
 import com.example.novelreader.Piaotain.PiaotianBookInfoActivity;
 import com.example.novelreader.service.Piaotian;
 
@@ -145,8 +146,14 @@ public class BookMarkFragment extends Fragment {
                                 else
                                 if(id == R.id.openBook) {
                                     Intent intent;
-                                    if(finalWebSite.equals("飄天文學網")) {
+                                    if(finalWebSite.equals("Piaotian")) {
                                         intent = new Intent(getActivity(), PiaotianBookInfoActivity.class);
+                                        intent.putExtra("URL","CHAPTER:" + finalUrl);
+                                        startActivity(intent);
+                                    }
+                                    else
+                                    if(finalWebSite.equals("CZBooks")) {
+                                        intent = new Intent(getActivity(), CZBooksBookInfoActivity.class);
                                         intent.putExtra("URL","CHAPTER:" + finalUrl);
                                         startActivity(intent);
                                     }

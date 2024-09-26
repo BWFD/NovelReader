@@ -71,6 +71,9 @@ public class CZBooks {
 
 
     public static CZBooksBookDetail getBookDetail(String url) throws IOException {
+        if(url.startsWith("CHAPTER:")) {
+            url = getBookInfoByChapter(url.replace("CHAPTER:",""));
+        }
         CZBooksBookDetail czBooksBookDetail = new CZBooksBookDetail();
         Request request = new Request.Builder()
                 .url(url)
@@ -115,7 +118,6 @@ public class CZBooks {
 
     public static String[] getChapter(String url) throws IOException {
         String []book = new String[2];
-
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -138,5 +140,21 @@ public class CZBooks {
         }
 
         return book;
+    }
+
+    public static String getBookInfoByChapter(String url) throws IOException {
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Response response = client.newCall(request).execute();
+        Document document = null;
+        if(response.isSuccessful()){
+            document = Jsoup.parse(response.body().byteStream(), "UTF-8", url);
+        }
+        else {
+            System.out.println("Request failed with code: " + response.code());
+        }
+        return "https:" + document.select("div.position a").get(2).attr("href");
     }
 }
