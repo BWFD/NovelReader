@@ -59,6 +59,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/bookInfoImage"
                 />
 
+            <Button
+                android:id="@+id/suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="推薦同名書籍"
+                android:backgroundTint="@color/light_blue_600"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bookAuthor"
+                app:cornerRadius="0dp"
+                android:visibility="invisible"
+                />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

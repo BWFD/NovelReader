@@ -105,9 +105,12 @@ public class CZBooks {
                 }
             }
 
-
             czBooksBookDetail.setChapterName(name);
             czBooksBookDetail.setChapterHTML(html);
+
+            if(document.select("ul.nav.novel-detail-function-bar li").size() == 6) {
+                czBooksBookDetail.setSuggestionHtml("https:" + document.select("ul.nav.novel-detail-function-bar li").get(3).select("a").attr("href"));
+            }
 
         } else {
             System.out.println("Request failed with code: " + response.code());

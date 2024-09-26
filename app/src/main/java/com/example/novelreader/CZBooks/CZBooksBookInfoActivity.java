@@ -1,12 +1,14 @@
 package com.example.novelreader.CZBooks;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,6 +43,7 @@ public class CZBooksBookInfoActivity extends AppCompatActivity {
     private ListView chapterList;
     private ChapterListAdapter chapterListAdapter;
     private TextView loading;
+    private Button suggestion;
 
     private final Executor executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -64,6 +67,7 @@ public class CZBooksBookInfoActivity extends AppCompatActivity {
         chapterList = findViewById(R.id.chapterList);
         bookInfo = new CZBooksBookDetail();
         loading = findViewById(R.id.Loading);
+        suggestion = findViewById(R.id.suggestion);
 
 
         getBookInfo(url);
@@ -93,6 +97,19 @@ public class CZBooksBookInfoActivity extends AppCompatActivity {
                         chapterListAdapter.notifyDataSetChanged();
                         chapterList.invalidateViews();
                         loading.setVisibility(View.INVISIBLE);
+
+                        if(!bookInfo.getSuggestionHtml().equals("NULL")) {
+                            suggestion.setVisibility(View.VISIBLE);
+                            suggestion.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(activity, CZBooksBookInfoActivity.class);
+                                    intent.putExtra("URL",bookInfo.getSuggestionHtml());
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                        }
 
                     }
                 });

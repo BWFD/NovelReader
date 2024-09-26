@@ -11,6 +11,7 @@ public class CZBooksBookDetail {
     private String imageURL;
     private List<String> chapterName = new ArrayList<>();
     private List<String> chapterHTML = new ArrayList<>();
+    private String suggestionHtml = "NULL";
 
     public String getName() {
         return name;
@@ -58,5 +59,13 @@ public class CZBooksBookDetail {
 
     public void setChapterHTML(List<String> chapterHTML) {
         this.chapterHTML = chapterHTML;
+    }
+
+    public String getSuggestionHtml() {
+        return suggestionHtml;
+    }
+
+    public void setSuggestionHtml(String suggestionHtml) {
+        this.suggestionHtml = suggestionHtml;
     }
 }
