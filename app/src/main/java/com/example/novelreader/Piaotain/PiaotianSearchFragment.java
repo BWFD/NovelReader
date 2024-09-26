@@ -73,7 +73,6 @@ public class PiaotianSearchFragment extends Fragment {
                         Toast.makeText(getActivity(), "請輸入至少兩個字元", Toast.LENGTH_LONG).show();
                     }
                     else {
-
                         InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         if (imm != null) {
                             imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);

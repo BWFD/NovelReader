@@ -23,14 +23,16 @@ public class ChapterListAdapter extends ArrayAdapter<String> {
     Uri uri = Uri.parse("content://com.example.novelreader.bookmark/data");
     Cursor cursor;
     String bookName;
+    String webSite;
 
-    public ChapterListAdapter(Activity context, List<String> name, List<String> html, String bookName) {
+    public ChapterListAdapter(Activity context, List<String> name, List<String> html, String bookName, String webSite) {
         super(context, 0, name);
         this.context = context;
         this.name = name;
         this.html = html;
         this.cursor = context.getContentResolver().query(uri, null, null, null, null);
         this.bookName = bookName;
+        this.webSite = webSite;
     }
     public View getView(int position, View convertView, ViewGroup parent) {
         View listItemView = convertView;
@@ -49,11 +51,13 @@ public class ChapterListAdapter extends ArrayAdapter<String> {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println(html.get(position));
                 Intent intent = new Intent(context, ReaderActivity.class);
                 intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(html));
                 intent.putExtra("currentHtml", html.get(position));
                 intent.putExtra("isInBookMark","false");
                 intent.putExtra("bookName", bookName);
+                intent.putExtra("webSite",webSite);
 
                 cursor = context.getContentResolver().query(uri, null, null, null, null);
                 if (cursor != null) {

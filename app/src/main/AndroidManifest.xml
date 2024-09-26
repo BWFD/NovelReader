@@ -16,6 +16,18 @@
         android:theme="@style/Theme.NovelReader"
         tools:targetApi="31">
         <activity
+            android:name=".CZBooks.CZBooksClassificationList3Activity"
+            android:exported="false" />
+        <activity
+            android:name=".CZBooks.CZBooksBookInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CZBooks.CZBooksClassificationList5Activity"
+            android:exported="false" />
+        <activity
+            android:name=".CZBooks.CZBooksInfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".SettingActivity"
             android:exported="false" />
         <activity
@@ -45,7 +57,6 @@
             android:authorities="com.example.novelreader.bookmark"
             android:exported="true"
             android:grantUriPermissions="true" />
-
         <provider
             android:name=".database.SettingProvider"
             android:authorities="com.example.novelreader.setting"

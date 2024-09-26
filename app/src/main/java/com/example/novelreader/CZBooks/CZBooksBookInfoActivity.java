@@ -1,4 +1,4 @@
-package com.example.novelreader.Piaotain;
+package com.example.novelreader.CZBooks;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -13,14 +13,15 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.novelreader.ChapterListAdapter;
 import com.example.novelreader.R;
-import com.example.novelreader.dao.PiaotianBookDetail;
-import com.example.novelreader.service.Piaotian;
+import com.example.novelreader.dao.CZBooksBookDetail;
+import com.example.novelreader.service.CZBooks;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,13 +30,11 @@ import java.net.URL;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import androidx.core.content.ContextCompat;
-
-public class PiaotianBookInfoActivity extends AppCompatActivity {
+public class CZBooksBookInfoActivity extends AppCompatActivity {
 
     Activity activity = this;
     private ImageView imageView;
-    private PiaotianBookDetail bookInfo;
+    private CZBooksBookDetail bookInfo;
     private TextView bookName;
     private TextView bookAuthor;
     private TextView bookDesc;
@@ -50,7 +49,7 @@ public class PiaotianBookInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_piaotian_book_info);
+        setContentView(R.layout.activity_czbooks_book_info);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -63,12 +62,11 @@ public class PiaotianBookInfoActivity extends AppCompatActivity {
         bookAuthor = findViewById(R.id.bookAuthor);
         bookDesc = findViewById(R.id.bookDesc);
         chapterList = findViewById(R.id.chapterList);
-        bookInfo = new PiaotianBookDetail();
+        bookInfo = new CZBooksBookDetail();
         loading = findViewById(R.id.Loading);
 
 
         getBookInfo(url);
-
     }
 
     public void getBookInfo(String url) {
@@ -76,7 +74,7 @@ public class PiaotianBookInfoActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    bookInfo = Piaotian.getBookDetail(url);
+                    bookInfo = CZBooks.getBookDetail(url);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -89,7 +87,7 @@ public class PiaotianBookInfoActivity extends AppCompatActivity {
                         bookAuthor.setText(bookInfo.getAuthor());
                         bookDesc.setText(bookInfo.getDesc());
 
-                        chapterListAdapter = new ChapterListAdapter(activity,bookInfo.getChapterName(),bookInfo.getChapterHTML(), bookInfo.getName(),"Piaotian");
+                        chapterListAdapter = new ChapterListAdapter(activity,bookInfo.getChapterName(),bookInfo.getChapterHTML(), bookInfo.getName(),"CZBooks");
                         chapterList.setAdapter(chapterListAdapter);
 
                         chapterListAdapter.notifyDataSetChanged();

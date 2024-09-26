@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".CZBooks.CZBooksBookListFragment">
+
+    <TextView android:id="@+id/MonthRankedLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:text="載入中..."
+        android:textColor="@color/white"
+        android:textSize="40dp"
+        android:gravity="center"
+        android:paddingBottom="90dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/monthRankedList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fastScrollAlwaysVisible="false"
+            android:fastScrollEnabled="true"
+            android:scrollbarSize="10dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:visibility="invisible"
+            android:layout_marginBottom="150dp"
+            />
+
+    </LinearLayout>
+
+</FrameLayout>

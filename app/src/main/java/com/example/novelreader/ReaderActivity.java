@@ -22,6 +22,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.novelreader.service.CZBooks;
 import com.example.novelreader.service.Piaotian;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class ReaderActivity extends AppCompatActivity {
     private Button prevButton;
     private Button nextButton;
     private String[] book;
+    private String webSite;
     String url;
     Uri uri = Uri.parse("content://com.example.novelreader.bookmark/data");
     Uri setting = Uri.parse("content://com.example.novelreader.setting/data");
@@ -61,6 +63,8 @@ public class ReaderActivity extends AppCompatActivity {
         prevButton = findViewById(R.id.prevButton);
         nextButton = findViewById(R.id.nextButton);
         settingButton = findViewById(R.id.settingButton);
+
+        this.webSite = getIntent().getStringExtra("webSite");
         if(isFirst) {
             this.url = getIntent().getStringExtra("currentHtml");
             this.TOTALHTML = getIntent().getStringArrayListExtra("TOTALHTML");
@@ -108,6 +112,7 @@ public class ReaderActivity extends AppCompatActivity {
                     intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
+                    intent.putExtra("webSite",webSite);
                     startActivity(intent);
                     finish();
                 }
@@ -125,6 +130,7 @@ public class ReaderActivity extends AppCompatActivity {
                     intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
+                    intent.putExtra("webSite",webSite);
                     startActivity(intent);
                     finish();
                 }
@@ -139,6 +145,7 @@ public class ReaderActivity extends AppCompatActivity {
                     intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
+                    intent.putExtra("webSite",webSite);
                     startActivity(intent);
                     finish();
                 }
@@ -152,6 +159,7 @@ public class ReaderActivity extends AppCompatActivity {
                     intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
+                    intent.putExtra("webSite",webSite);
                     startActivity(intent);
                     finish();
                 }
@@ -167,7 +175,16 @@ public class ReaderActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    book = Piaotian.getChapter(url);
+                    if(webSite.equals("Piaotian")) {
+                        book = Piaotian.getChapter(url);
+                    }
+                    else
+                    if(webSite.equals("CZBooks")) {
+                        book = CZBooks.getChapter(url);
+                    }
+                    else {
+                        book = null;
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -217,7 +234,7 @@ public class ReaderActivity extends AppCompatActivity {
 
                 ContentValues values = new ContentValues();
                 values.put("bookName",getIntent().getStringExtra("bookName"));
-                values.put("webSite","飄天文學網");
+                values.put("webSite",webSite);
                 values.put("chapterName",book[0]);
                 values.put("chapterUrl",url);
                 values.put("TOTALHTML", TextUtils.join(",", TOTALHTML));

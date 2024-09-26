@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background"
+    tools:context=".CZBooks.CZBooksSearchFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        >
+
+        <EditText
+            android:id="@+id/searchText"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_toLeftOf="@+id/searchSubmitButton"
+            android:background="@drawable/edittext_border"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:inputType="text"
+            android:paddingLeft="8dp"
+            android:textColor="@color/black"
+            android:imeOptions="actionSearch"/>
+
+        <Button
+            android:id="@+id/searchSubmitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/light_blue_600"
+            android:text="搜尋"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            app:cornerRadius="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="8dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/NoFound"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:text="此次搜尋無結果"
+        android:textColor="@color/white"
+        android:textSize="40dp"
+        android:gravity="center"
+        android:paddingBottom="90dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:visibility="invisible"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="150dp">
+
+        <ListView
+            android:id="@+id/searchList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fastScrollAlwaysVisible="false"
+            android:fastScrollEnabled="true"
+            android:scrollbarSize="10dp"
+            android:scrollbarStyle="outsideOverlay"
+            />
+    </LinearLayout>
+
+
+</FrameLayout>

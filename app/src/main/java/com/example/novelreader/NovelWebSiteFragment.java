@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.novelreader.CZBooks.CZBooksInfoActivity;
 import com.example.novelreader.Piaotain.PiaotianInfoActivity;
 
 
@@ -22,13 +23,23 @@ public class NovelWebSiteFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_novel_web_site, container, false);
 
         Button piaotian = view.findViewById(R.id.piaotian);
+        Button czBooks = view.findViewById(R.id.CZBooks);
         Button setting = view.findViewById(R.id.setting);
+
         piaotian.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 //getContext().getContentResolver().delete(uri,null,null);
                 Intent intent = new Intent(getActivity(), PiaotianInfoActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        czBooks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CZBooksInfoActivity.class);
                 startActivity(intent);
             }
         });

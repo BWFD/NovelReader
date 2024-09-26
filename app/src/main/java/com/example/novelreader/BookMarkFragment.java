@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 public class BookMarkFragment extends Fragment {
@@ -44,47 +45,6 @@ public class BookMarkFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_book_mark, container, false);
         bookmarkList = view.findViewById(R.id.bookmarkList);
 
-        cursor = getContext().getContentResolver().query(uri, null, null, null, "_id DESC");
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String text = "";
-                Button button = new Button(getActivity());
-                int index = cursor.getColumnIndex("bookName");
-                if(index != -1) {
-                    text = cursor.getString(index);
-                }
-                index = cursor.getColumnIndex("webSite");
-                if(index != -1) {
-                    text = text + "-" + cursor.getString(index);
-                }
-                index = cursor.getColumnIndex("chapterName");
-                if(index != -1) {
-                    text = text + "\n" + cursor.getString(index);
-                }
-                button.setText(text);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                button.setLayoutParams(params);
-                button.setGravity(Gravity.CENTER_VERTICAL);
-                button.setPadding(10,0,0,0);
-                button.setTextColor(Color.WHITE);
-                bookmarkList.addView(button);
-
-                View bar = new View(getActivity());
-                int color = ContextCompat.getColor(requireActivity(), R.color.light_blue_600);
-                bar.setBackgroundColor(color);
-                params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        6
-                );
-                bar.setLayoutParams(params);
-
-                bookmarkList.addView(bar);
-            }
-        }
-        cursor.close();
         return view;
     }
 
@@ -114,7 +74,16 @@ public class BookMarkFragment extends Fragment {
                 index = cursor.getColumnIndex("webSite");
                 if (index != -1) {
                     webSite = cursor.getString(index);
-                    text = text + "-" + webSite;
+                    if(Objects.equals(webSite, "Piaotian")) {
+                        text = text + "-" + "飄天文學網";
+                    }
+                    else
+                    if(Objects.equals(webSite, "CZBooks")) {
+                        text = text + "-" + "小說狂人";
+                    }
+                    else  {
+                        text = text + "-" + webSite;
+                    }
                 }
                 index = cursor.getColumnIndex("chapterName");
                 if (index != -1) {
@@ -150,6 +119,7 @@ public class BookMarkFragment extends Fragment {
                         intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(Arrays.asList(finalTOTALHTML.split(","))));
                         intent.putExtra("isInBookMark","true");
                         intent.putExtra("bookName", finalBookName);
+                        intent.putExtra("webSite", finalWebSite);
                         startActivity(intent);
                     }
                 });
