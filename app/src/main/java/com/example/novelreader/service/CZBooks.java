@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import okhttp3.OkHttpClient;
@@ -55,6 +56,14 @@ public class CZBooks {
         Response response = client.newCall(request).execute();
         if (response.isSuccessful()) {
             document = Jsoup.parse(response.body().byteStream(), "UTF-8", url);
+
+            int size = document.select("ul.nav.paginate li").size() - 1;
+            int maxPage = Integer.parseInt(document.select("ul.nav.paginate li").get(size).text().replace("~",""));
+            if(page > maxPage) {
+                return null;
+            }
+
+
             Elements elements = document.select("ul.nav.novel-list div.novel-item");
             elements.forEach(element -> {
                 booklist.add(new CZBooksClassification(element.select("div.novel-item-title").text(),
