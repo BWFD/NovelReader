@@ -79,6 +79,9 @@ public class CZBooksSearchFragment extends Fragment {
                     if (imm != null) {
                         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                     }
+                    dataList.clear();
+                    adapter.notifyDataSetChanged();
+                    listView.invalidateViews();
                     getListAndUpdate();
                     notLoading = false;
                     page = 1;
@@ -99,7 +102,9 @@ public class CZBooksSearchFragment extends Fragment {
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                 }
-
+                dataList.clear();
+                adapter.notifyDataSetChanged();
+                listView.invalidateViews();
                 getListAndUpdate();
                 notLoading = false;
                 page = 1;
