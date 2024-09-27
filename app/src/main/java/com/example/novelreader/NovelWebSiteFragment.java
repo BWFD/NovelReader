@@ -47,7 +47,7 @@ public class NovelWebSiteFragment extends Fragment {
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SettingActivity.class);
+                Intent intent = new Intent(getActivity(), WordSettingActivity.class);
                 startActivity(intent);
             }
         });

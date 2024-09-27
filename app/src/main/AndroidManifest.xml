@@ -28,7 +28,7 @@
             android:name=".CZBooks.CZBooksInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingActivity"
+            android:name=".WordSettingActivity"
             android:exported="false" />
         <activity
             android:name=".ReaderActivity"

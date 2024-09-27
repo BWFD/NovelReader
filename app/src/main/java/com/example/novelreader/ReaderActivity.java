@@ -11,8 +11,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -22,12 +24,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.novelreader.CZBooks.CZBooksBookInfoActivity;
+import com.example.novelreader.Piaotain.PiaotianBookInfoActivity;
 import com.example.novelreader.service.CZBooks;
 import com.example.novelreader.service.Piaotian;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReaderActivity extends AppCompatActivity {
     Activity activity = this;
@@ -74,11 +77,45 @@ public class ReaderActivity extends AppCompatActivity {
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity, SettingActivity.class);
-                startActivity(intent);
+                PopupMenu popupMenu = new PopupMenu(activity, view);
+                popupMenu.getMenuInflater().inflate(R.menu.readersetting, popupMenu.getMenu());
 
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int id = item.getItemId();
+                        if(id == R.id.openBook) {
+                            Intent intent;
+                            if(webSite.equals("Piaotian")) {
+                                intent = new Intent(activity, PiaotianBookInfoActivity.class);
+                                intent.putExtra("URL","CHAPTER:" + url);
+                                startActivity(intent);
+                                finish();
+                            }
+                            else
+                            if(webSite.equals("CZBooks")) {
+                                intent = new Intent(activity, CZBooksBookInfoActivity.class);
+                                intent.putExtra("URL","CHAPTER:" + url);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+                        else
+                        if(id == R.id.wordSetting) {
+                            Intent intent = new Intent(activity, WordSettingActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
+                        else {
+                            return true;
+                        }
+                        return true;
+                    }
+                });
+                popupMenu.show();
             }
         });
+
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
