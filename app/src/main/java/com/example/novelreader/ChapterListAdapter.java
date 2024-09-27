@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -51,7 +52,6 @@ public class ChapterListAdapter extends ArrayAdapter<String> {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println(html.get(position));
                 Intent intent = new Intent(context, ReaderActivity.class);
                 intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(html));
                 intent.putExtra("currentHtml", html.get(position));
@@ -62,9 +62,10 @@ public class ChapterListAdapter extends ArrayAdapter<String> {
                 cursor = context.getContentResolver().query(uri, null, null, null, null);
                 if (cursor != null) {
                     while (cursor.moveToNext()) {
-                        int index = cursor.getColumnIndex("bookName");
+                        int index = cursor.getColumnIndex("TOTALHTML");
                         if(index != -1) {
-                            if(cursor.getString(index).equals(bookName)) {
+                            String TOTALHTML = TextUtils.join(",", new ArrayList<>(html));
+                            if(cursor.getString(index).equals(TOTALHTML)) {
                                 intent.putExtra("isInBookMark", "true");
                             }
                         }

@@ -145,7 +145,7 @@ public class BookMarkFragment extends Fragment {
                             public boolean onMenuItemClick(MenuItem item) {
                                 int id = item.getItemId();
                                 if(id == R.id.deleteMark) {
-                                    getContext().getContentResolver().delete(uri,"bookName = ?", new String[]{finalBookName});
+                                    getContext().getContentResolver().delete(uri,"TOTALHTML = ?", new String[]{finalTOTALHTML});
                                     getContext().getContentResolver().notifyChange(uri, null);
                                     update();
                                     return true;
