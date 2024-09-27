@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class BookMarkProviderHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "bookmark.db";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
     public BookMarkProviderHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -23,7 +23,8 @@ public class BookMarkProviderHelper extends SQLiteOpenHelper {
                         "webSite TEXT," +
                         "chapterName TEXT," +
                         "chapterUrl TEXT," +
-                        "TOTALHTML TEXT);"
+                        "TOTALHTML TEXT," +
+                        "Scrolled INT);"
         );
     }
 

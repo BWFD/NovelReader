@@ -66,6 +66,7 @@ public class BookMarkFragment extends Fragment {
                 String bookName = "";
                 String TOTALHTML = "";
                 String webSite = "";
+                int scrolled = 0;
                 Button button = new Button(getActivity());
                 int index = cursor.getColumnIndex("bookName");
                 if (index != -1) {
@@ -111,7 +112,12 @@ public class BookMarkFragment extends Fragment {
                 if (index != -1) {
                     TOTALHTML = cursor.getString(index);
                 }
+                index = cursor.getColumnIndex("Scrolled");
+                if (index != -1) {
+                    scrolled = cursor.getInt(index);
+                }
                 String finalTOTALHTML = TOTALHTML;
+                int finalScrolled = scrolled;
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -121,6 +127,7 @@ public class BookMarkFragment extends Fragment {
                         intent.putExtra("isInBookMark","true");
                         intent.putExtra("bookName", finalBookName);
                         intent.putExtra("webSite", finalWebSite);
+                        intent.putExtra("scrolled", finalScrolled);
                         startActivity(intent);
                     }
                 });

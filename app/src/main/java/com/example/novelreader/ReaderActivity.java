@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -47,6 +48,7 @@ public class ReaderActivity extends AppCompatActivity {
     private boolean isFirst = true;
     int index;
     private Button settingButton;
+    private ScrollView scrollView;
 
     String textSize="15";
     String textColor="#AAAAAA";
@@ -66,6 +68,7 @@ public class ReaderActivity extends AppCompatActivity {
         prevButton = findViewById(R.id.prevButton);
         nextButton = findViewById(R.id.nextButton);
         settingButton = findViewById(R.id.settingButton);
+        scrollView = findViewById(R.id.ReaderScrollView);
 
         this.webSite = getIntent().getStringExtra("webSite");
         if(isFirst) {
@@ -78,7 +81,7 @@ public class ReaderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 PopupMenu popupMenu = new PopupMenu(activity, view);
-                popupMenu.getMenuInflater().inflate(R.menu.readersetting, popupMenu.getMenu());
+                popupMenu.getMenuInflater().inflate(R.menu.readersettingmenu, popupMenu.getMenu());
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -122,6 +125,14 @@ public class ReaderActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 // 當用戶按下返回按鈕時，顯示彈窗
                 if(getIntent().getStringExtra("isInBookMark").equals("true")) {
+                    ContentValues values = new ContentValues();
+                    values.put("chapterName",book[0]);
+                    values.put("chapterUrl",url);
+                    values.put("scrolled",scrollView.getScrollY());
+                    String[] selectionArgs = new String[]{getIntent().getStringExtra("bookName")};
+
+                    getContentResolver().update(uri, values, "bookName = ?",selectionArgs);
+                    getContentResolver().notifyChange(uri, null);
                     finish();
                 }
                 else {
@@ -150,6 +161,7 @@ public class ReaderActivity extends AppCompatActivity {
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                     intent.putExtra("webSite",webSite);
+                    intent.putExtra("scrolled",0);
                     startActivity(intent);
                     finish();
                 }
@@ -168,6 +180,7 @@ public class ReaderActivity extends AppCompatActivity {
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                     intent.putExtra("webSite",webSite);
+                    intent.putExtra("scrolled",0);
                     startActivity(intent);
                     finish();
                 }
@@ -183,6 +196,7 @@ public class ReaderActivity extends AppCompatActivity {
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                     intent.putExtra("webSite",webSite);
+                    intent.putExtra("scrolled",0);
                     startActivity(intent);
                     finish();
                 }
@@ -197,6 +211,7 @@ public class ReaderActivity extends AppCompatActivity {
                     intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                     intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                     intent.putExtra("webSite",webSite);
+                    intent.putExtra("scrolled",0);
                     startActivity(intent);
                     finish();
                 }
@@ -237,11 +252,19 @@ public class ReaderActivity extends AppCompatActivity {
                         }
                         else {
                             textView.setText(book[1]);
+                            scrollView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    scrollView.smoothScrollTo(0, getIntent().getIntExtra("scrolled",0));  // 平滑滾動到指定位置
+                                }
+                            });
+
                         }
 
                         ContentValues values = new ContentValues();
                         values.put("chapterName",book[0]);
                         values.put("chapterUrl",url);
+                        values.put("scrolled",scrollView.getScrollY());
                         String[] selectionArgs = new String[]{getIntent().getStringExtra("bookName")};
 
                         getContentResolver().update(uri, values, "bookName = ?",selectionArgs);
@@ -275,6 +298,7 @@ public class ReaderActivity extends AppCompatActivity {
                 values.put("chapterName",book[0]);
                 values.put("chapterUrl",url);
                 values.put("TOTALHTML", TextUtils.join(",", TOTALHTML));
+                values.put("scrolled",scrollView.getScrollY());
 
                 activity.getContentResolver().insert(uri,values);
                 // 用戶選擇是，退出應用或關閉 Activity
