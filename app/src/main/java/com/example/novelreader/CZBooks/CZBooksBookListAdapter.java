@@ -66,13 +66,13 @@ public class CZBooksBookListAdapter extends ArrayAdapter<CZBooksClassification> 
         //找到data，並在View上設定正確的data
         CZBooksClassification item = getItem(position);
         String imageUrl = item.getImage();
+        holder.imageView.setImageResource(R.drawable.ic_launcher_round);
         Bitmap bitmap = imageCache.get(imageUrl);
         if (bitmap != null) {
             // 如果圖片已在緩存中，直接使用
             holder.imageView.setImageBitmap(bitmap);
         } else {
             // 沒有緩存時，加載圖片
-            holder.imageView.setImageResource(R.drawable.ic_launcher_round); // 設置預設圖片
             loadImage(imageUrl, holder.imageView);
             imageUrls.add(imageUrl);
         }
@@ -95,7 +95,7 @@ public class CZBooksBookListAdapter extends ArrayAdapter<CZBooksClassification> 
         return listItemView;
     }
     private void loadImage(String imageUrl, ImageView imageView) {
-
+        imageView.setTag(imageUrl);
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -116,7 +116,9 @@ public class CZBooksBookListAdapter extends ArrayAdapter<CZBooksClassification> 
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                imageView.setImageBitmap(bitmap);
+                                if (imageView.getTag().equals(imageUrl)) {
+                                    imageView.setImageBitmap(bitmap);
+                                }
                             }
                         });
                     }
