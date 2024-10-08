@@ -328,4 +328,18 @@ public class ReaderActivity extends AppCompatActivity {
         textView.setTextColor(Color.parseColor(textColor));
         textView.setTextSize(Integer.parseInt(textSize));
     }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+
+        ContentValues values = new ContentValues();
+        values.put("chapterName",book[0]);
+        values.put("chapterUrl",url);
+        values.put("scrolled",scrollView.getScrollY());
+        String[] selectionArgs = new String[]{getIntent().getStringExtra("bookName")};
+
+        getContentResolver().update(uri, values, "bookName = ?",selectionArgs);
+        getContentResolver().notifyChange(uri, null);
+    }
 }
