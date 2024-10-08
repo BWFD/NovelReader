@@ -1,5 +1,5 @@
 # 請注意!!!此應用程式就是參考以下的應用程式(可以說是抄襲)開發的
-![圖片icon](https://scontent-tpe1-1.xx.fbcdn.net/v/t39.30808-6/307482709_603722941543484_980105175236759491_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=3H5fMdAdiSMQ7kNvgEc4k7u&_nc_ht=scontent-tpe1-1.xx&oh=00_AYDm9mX1N_SRPOMTQ2sZepSmwcugknmK640zdABvggZu9w&oe=66E876A6)
+![圖片icon](https://scontent-tpe1-1.xx.fbcdn.net/v/t39.30808-6/307482709_603722941543484_980105175236759491_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=_1xhfo_h3REQ7kNvgHWBAt0&_nc_ht=scontent-tpe1-1.xx&_nc_gid=ANflhA8xRYXUWdxYy8ydYKp&oh=00_AYD-iGQ60atM3Pi3b-AlrmknWQ0e4wD7snmhrquzDYp91g&oe=670A8566)
 [FaceBook粉絲專頁](https://www.facebook.com/WebNovelReader/)
 
 **謹以此紀念這個應用程式**
