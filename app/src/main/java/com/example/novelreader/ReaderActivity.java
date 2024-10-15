@@ -49,6 +49,7 @@ public class ReaderActivity extends AppCompatActivity {
     int index;
     private Button settingButton;
     private ScrollView scrollView;
+    private TextView loading;
 
     String textSize="15";
     String textColor="#AAAAAA";
@@ -69,6 +70,7 @@ public class ReaderActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.nextButton);
         settingButton = findViewById(R.id.settingButton);
         scrollView = findViewById(R.id.ReaderScrollView);
+        loading = findViewById(R.id.loading);
 
         this.webSite = getIntent().getStringExtra("webSite");
         if(isFirst) {
@@ -245,13 +247,15 @@ public class ReaderActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         title.setText(book[0]);
-                        if(book[1].isEmpty()) {
+                        if(book[1] != null && book[1].isEmpty()) {
                             textView.setText("來源網站排版有問題，建議到別的網站觀看!!!");
                             textView.setTextSize(40);
                             textView.setGravity(Gravity.CENTER_VERTICAL);
                         }
                         else {
                             textView.setText(book[1]);
+                            loading.setText("");
+                            loading.setVisibility(View.INVISIBLE);
                             scrollView.post(new Runnable() {
                                 @Override
                                 public void run() {

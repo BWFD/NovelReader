@@ -25,6 +25,7 @@ public class NovelWebSiteFragment extends Fragment {
         Button piaotian = view.findViewById(R.id.piaotian);
         Button czBooks = view.findViewById(R.id.CZBooks);
         Button setting = view.findViewById(R.id.setting);
+        Button errorTest = view.findViewById(R.id.errorTest);
 
         piaotian.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +49,14 @@ public class NovelWebSiteFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), WordSettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        errorTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ErrorTestActivity.class);
                 startActivity(intent);
             }
         });

@@ -16,6 +16,9 @@
         android:theme="@style/Theme.NovelReader"
         tools:targetApi="31">
         <activity
+            android:name=".ErrorTestActivity"
+            android:exported="false" />
+        <activity
             android:name=".CZBooks.CZBooksClassificationList3Activity"
             android:exported="false" />
         <activity
