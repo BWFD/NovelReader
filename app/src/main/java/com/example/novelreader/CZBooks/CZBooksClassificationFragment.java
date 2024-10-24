@@ -48,12 +48,7 @@ public class CZBooksClassificationFragment extends Fragment {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                requireActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        createButtons(classificationList);
-                    }
-                });
+                requireActivity().runOnUiThread(() -> createButtons(classificationList));
             }
         }).start();
     }
@@ -97,24 +92,21 @@ public class CZBooksClassificationFragment extends Fragment {
             button.setLayoutParams(params);
             // 設置按鈕的點擊事件
             int finalActivityType = activityType;
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent;
-                    if(finalActivityType == 5) {
-                        intent = new Intent(getActivity(), CZBooksClassificationList5Activity.class);
-                    }
-                    else
-                    if(finalActivityType == 3) {
-                        intent = new Intent(getActivity(), CZBooksClassificationList3Activity.class);
-                    }
-                    else {
-                        intent = null;
-                    }
-                    intent.putExtra("URL",classification.getUrl());
-                    intent.putExtra("title",classification.getName());
-                    startActivity(intent);
+            button.setOnClickListener(v -> {
+                Intent intent;
+                if(finalActivityType == 5) {
+                    intent = new Intent(getActivity(), CZBooksClassificationList5Activity.class);
                 }
+                else
+                if(finalActivityType == 3) {
+                    intent = new Intent(getActivity(), CZBooksClassificationList3Activity.class);
+                }
+                else {
+                    intent = null;
+                }
+                intent.putExtra("URL",classification.getUrl());
+                intent.putExtra("title",classification.getName());
+                startActivity(intent);
             });
             layout.addView(button);
 

@@ -27,38 +27,26 @@ public class NovelWebSiteFragment extends Fragment {
         Button setting = view.findViewById(R.id.setting);
         Button errorTest = view.findViewById(R.id.errorTest);
 
-        piaotian.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        piaotian.setOnClickListener(view -> {
 
-                //getContext().getContentResolver().delete(uri,null,null);
-                Intent intent = new Intent(getActivity(), PiaotianInfoActivity.class);
-                startActivity(intent);
-            }
+            //getContext().getContentResolver().delete(uri,null,null);
+            Intent intent = new Intent(getActivity(), PiaotianInfoActivity.class);
+            startActivity(intent);
         });
 
-        czBooks.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CZBooksInfoActivity.class);
-                startActivity(intent);
-            }
+        czBooks.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), CZBooksInfoActivity.class);
+            startActivity(intent);
         });
 
-        setting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), WordSettingActivity.class);
-                startActivity(intent);
-            }
+        setting.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), WordSettingActivity.class);
+            startActivity(intent);
         });
 
-        errorTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), ErrorTestActivity.class);
-                startActivity(intent);
-            }
+        errorTest.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), ErrorTestActivity.class);
+            startActivity(intent);
         });
 
         return view;

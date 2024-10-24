@@ -70,33 +70,8 @@ public class CZBooksSearchFragment extends Fragment {
 
         listView.setAdapter(adapter);
 
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-
-                    InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm != null) {
-                        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                    }
-                    dataList.clear();
-                    adapter.notifyDataSetChanged();
-                    listView.invalidateViews();
-                    getListAndUpdate();
-                    notLoading = false;
-                    page = 1;
-                    // 執行搜尋操作
-                    return true;
-                }
-                return false;
-            }
-        });
-
-
-        Button submitButton = view.findViewById(R.id.searchSubmitButton);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        editText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
                 InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
@@ -108,7 +83,26 @@ public class CZBooksSearchFragment extends Fragment {
                 getListAndUpdate();
                 notLoading = false;
                 page = 1;
+                // 執行搜尋操作
+                return true;
             }
+            return false;
+        });
+
+
+        Button submitButton = view.findViewById(R.id.searchSubmitButton);
+        submitButton.setOnClickListener(view -> {
+
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+            }
+            dataList.clear();
+            adapter.notifyDataSetChanged();
+            listView.invalidateViews();
+            getListAndUpdate();
+            notLoading = false;
+            page = 1;
         });
 
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -135,23 +129,15 @@ public class CZBooksSearchFragment extends Fragment {
         String keyword = String.valueOf(editText.getText());
         String url = "https://czbooks.net/s/" + keyword;
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<CZBooksClassification> temp = CZBooks.getBookList(url,page);
-                    if(temp != null) {
-                        dataList.addAll(temp);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateUI();
-                            }
-                        });
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        new Thread(() -> {
+            try {
+                List<CZBooksClassification> temp = CZBooks.getBookList(url,page);
+                if(temp != null) {
+                    dataList.addAll(temp);
+                    getActivity().runOnUiThread(() -> updateUI());
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }).start();
     }

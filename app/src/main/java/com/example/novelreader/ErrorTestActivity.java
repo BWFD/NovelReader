@@ -36,36 +36,30 @@ public class ErrorTestActivity extends AppCompatActivity {
         piaotian = findViewById(R.id.piaotian);
         czbooks = findViewById(R.id.czbooks);
 
-        piaotian.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url = "https://www.piaotia.com/";
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                try {
-                    Intent chooser = Intent.createChooser(intent, "選擇瀏覽器開啟網站");
-                    startActivity(chooser);
-                }catch (ActivityNotFoundException e) {
-                    Toast.makeText(activity, "網站開啟失敗", Toast.LENGTH_SHORT).show();
-                }
-
+        piaotian.setOnClickListener(view -> {
+            String url = "https://www.piaotia.com/";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            try {
+                Intent chooser = Intent.createChooser(intent, "選擇瀏覽器開啟網站");
+                startActivity(chooser);
+            }catch (ActivityNotFoundException e) {
+                Toast.makeText(activity, "網站開啟失敗", Toast.LENGTH_SHORT).show();
             }
+
         });
 
-        czbooks.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url = "https://czbooks.net/";
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                try {
-                    Intent chooser = Intent.createChooser(intent, "選擇瀏覽器開啟網站");
-                    startActivity(chooser);
-                }catch (ActivityNotFoundException e) {
-                    Toast.makeText(activity, "網站開啟失敗", Toast.LENGTH_SHORT).show();
-                }
-
+        czbooks.setOnClickListener(view -> {
+            String url = "https://czbooks.net/";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            try {
+                Intent chooser = Intent.createChooser(intent, "選擇瀏覽器開啟網站");
+                startActivity(chooser);
+            }catch (ActivityNotFoundException e) {
+                Toast.makeText(activity, "網站開啟失敗", Toast.LENGTH_SHORT).show();
             }
+
         });
     }
 }

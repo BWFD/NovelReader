@@ -79,46 +79,40 @@ public class ReaderActivity extends AppCompatActivity {
             isFirst = false;
         }
 
-        settingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(activity, view);
-                popupMenu.getMenuInflater().inflate(R.menu.readersettingmenu, popupMenu.getMenu());
+        settingButton.setOnClickListener(view -> {
+            PopupMenu popupMenu = new PopupMenu(activity, view);
+            popupMenu.getMenuInflater().inflate(R.menu.readersettingmenu, popupMenu.getMenu());
 
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int id = item.getItemId();
-                        if(id == R.id.openBook) {
-                            Intent intent;
-                            if(webSite.equals("Piaotian")) {
-                                intent = new Intent(activity, PiaotianBookInfoActivity.class);
-                                intent.putExtra("URL","CHAPTER:" + url);
-                                startActivity(intent);
-                                finish();
-                            }
-                            else
-                            if(webSite.equals("CZBooks")) {
-                                intent = new Intent(activity, CZBooksBookInfoActivity.class);
-                                intent.putExtra("URL","CHAPTER:" + url);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-                        else
-                        if(id == R.id.wordSetting) {
-                            Intent intent = new Intent(activity, WordSettingActivity.class);
-                            startActivity(intent);
-                            return true;
-                        }
-                        else {
-                            return true;
-                        }
-                        return true;
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                if(id == R.id.openBook) {
+                    Intent intent;
+                    if(webSite.equals("Piaotian")) {
+                        intent = new Intent(activity, PiaotianBookInfoActivity.class);
+                        intent.putExtra("URL","CHAPTER:" + url);
+                        startActivity(intent);
+                        finish();
                     }
-                });
-                popupMenu.show();
-            }
+                    else
+                    if(webSite.equals("CZBooks")) {
+                        intent = new Intent(activity, CZBooksBookInfoActivity.class);
+                        intent.putExtra("URL","CHAPTER:" + url);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+                else
+                if(id == R.id.wordSetting) {
+                    Intent intent = new Intent(activity, WordSettingActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                else {
+                    return true;
+                }
+                return true;
+            });
+            popupMenu.show();
         });
 
 
@@ -154,69 +148,57 @@ public class ReaderActivity extends AppCompatActivity {
         if(index == 0) {
             prevButton.setBackgroundColor(Color.WHITE);
 
-            nextButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(activity,ReaderActivity.class);
-                    intent.putExtra("currentHtml", TOTALHTML.get(index + 1));
-                    intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
-                    intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
-                    intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
-                    intent.putExtra("webSite",webSite);
-                    intent.putExtra("scrolled",0);
-                    startActivity(intent);
-                    finish();
-                }
+            nextButton.setOnClickListener(view -> {
+                Intent intent = new Intent(activity,ReaderActivity.class);
+                intent.putExtra("currentHtml", TOTALHTML.get(index + 1));
+                intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
+                intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
+                intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
+                intent.putExtra("webSite",webSite);
+                intent.putExtra("scrolled",0);
+                startActivity(intent);
+                finish();
             });
         }
         else
         if(index == TOTALHTML.size() -1 ){
             nextButton.setBackgroundColor(Color.WHITE);
 
-            prevButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(activity,ReaderActivity.class);
-                    intent.putExtra("currentHtml", TOTALHTML.get(index - 1));
-                    intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
-                    intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
-                    intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
-                    intent.putExtra("webSite",webSite);
-                    intent.putExtra("scrolled",0);
-                    startActivity(intent);
-                    finish();
-                }
+            prevButton.setOnClickListener(view -> {
+                Intent intent = new Intent(activity,ReaderActivity.class);
+                intent.putExtra("currentHtml", TOTALHTML.get(index - 1));
+                intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
+                intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
+                intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
+                intent.putExtra("webSite",webSite);
+                intent.putExtra("scrolled",0);
+                startActivity(intent);
+                finish();
             });
         }
         else {
-            nextButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(activity,ReaderActivity.class);
-                    intent.putExtra("currentHtml", TOTALHTML.get(index + 1));
-                    intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
-                    intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
-                    intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
-                    intent.putExtra("webSite",webSite);
-                    intent.putExtra("scrolled",0);
-                    startActivity(intent);
-                    finish();
-                }
+            nextButton.setOnClickListener(view -> {
+                Intent intent = new Intent(activity,ReaderActivity.class);
+                intent.putExtra("currentHtml", TOTALHTML.get(index + 1));
+                intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
+                intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
+                intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
+                intent.putExtra("webSite",webSite);
+                intent.putExtra("scrolled",0);
+                startActivity(intent);
+                finish();
             });
 
-            prevButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(activity,ReaderActivity.class);
-                    intent.putExtra("currentHtml", TOTALHTML.get(index - 1));
-                    intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
-                    intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
-                    intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
-                    intent.putExtra("webSite",webSite);
-                    intent.putExtra("scrolled",0);
-                    startActivity(intent);
-                    finish();
-                }
+            prevButton.setOnClickListener(view -> {
+                Intent intent = new Intent(activity,ReaderActivity.class);
+                intent.putExtra("currentHtml", TOTALHTML.get(index - 1));
+                intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
+                intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
+                intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
+                intent.putExtra("webSite",webSite);
+                intent.putExtra("scrolled",0);
+                startActivity(intent);
+                finish();
             });
 
         }
@@ -284,30 +266,24 @@ public class ReaderActivity extends AppCompatActivity {
         builder.setTitle("添加書籤");
         builder.setMessage("要加入書籤嗎?");
 
-        builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // 用戶選擇否，取消對話框
-                finish();
-            }
+        builder.setNegativeButton("否", (dialog, which) -> {
+            // 用戶選擇否，取消對話框
+            finish();
         });
 
-        builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton("是", (dialog, which) -> {
 
-                ContentValues values = new ContentValues();
-                values.put("bookName",getIntent().getStringExtra("bookName"));
-                values.put("webSite",webSite);
-                values.put("chapterName",book[0]);
-                values.put("chapterUrl",url);
-                values.put("TOTALHTML", TextUtils.join(",", TOTALHTML));
-                values.put("scrolled",scrollView.getScrollY());
+            ContentValues values = new ContentValues();
+            values.put("bookName",getIntent().getStringExtra("bookName"));
+            values.put("webSite",webSite);
+            values.put("chapterName",book[0]);
+            values.put("chapterUrl",url);
+            values.put("TOTALHTML", TextUtils.join(",", TOTALHTML));
+            values.put("scrolled",scrollView.getScrollY());
 
-                activity.getContentResolver().insert(uri,values);
-                // 用戶選擇是，退出應用或關閉 Activity
-                finish();  // 關閉當前 Activity
-            }
+            activity.getContentResolver().insert(uri,values);
+            // 用戶選擇是，退出應用或關閉 Activity
+            finish();  // 關閉當前 Activity
         });
         builder.create().show();
     }

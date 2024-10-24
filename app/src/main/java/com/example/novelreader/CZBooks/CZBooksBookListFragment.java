@@ -110,23 +110,15 @@ public class CZBooksBookListFragment extends Fragment {
     public void getBookList() {
         String url = getArguments().getString("classification");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<CZBooksClassification> temp = CZBooks.getBookList(url,page);
-                    if(temp != null) {
-                        dataList.addAll(temp);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateUI();
-                            }
-                        });
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        new Thread(() -> {
+            try {
+                List<CZBooksClassification> temp = CZBooks.getBookList(url,page);
+                if(temp != null) {
+                    dataList.addAll(temp);
+                    getActivity().runOnUiThread(() -> updateUI());
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }).start();
     }

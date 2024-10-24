@@ -83,48 +83,39 @@ public class CZBooksBookListAdapter extends ArrayAdapter<CZBooksClassification> 
         bookButton.setGravity(Gravity.CENTER_VERTICAL);
         bookButton.setTextSize(20);
         bookButton.setPadding(10,0,0,0);
-        bookButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, CZBooksBookInfoActivity.class);
-                intent.putExtra("URL",item.getUrl());
-                context.startActivity(intent);
-            }
+        bookButton.setOnClickListener(view -> {
+            Intent intent = new Intent(context, CZBooksBookInfoActivity.class);
+            intent.putExtra("URL",item.getUrl());
+            context.startActivity(intent);
         });
 
         return listItemView;
     }
     private void loadImage(String imageUrl, ImageView imageView) {
         imageView.setTag(imageUrl);
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // 下載圖片
-                    URL url = new URL(imageUrl);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setDoInput(true);
-                    connection.connect();
-                    InputStream input = connection.getInputStream();
-                    final Bitmap bitmap = BitmapFactory.decodeStream(input);
+        executor.execute(() -> {
+            try {
+                // 下載圖片
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                final Bitmap bitmap = BitmapFactory.decodeStream(input);
 
-                    if (bitmap != null) {
-                        // 將下載的圖片添加到緩存
-                        imageCache.put(imageUrl, bitmap);
+                if (bitmap != null) {
+                    // 將下載的圖片添加到緩存
+                    imageCache.put(imageUrl, bitmap);
 
-                        // 主線程更新 UI
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (imageView.getTag().equals(imageUrl)) {
-                                    imageView.setImageBitmap(bitmap);
-                                }
-                            }
-                        });
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    // 主線程更新 UI
+                    handler.post(() -> {
+                        if (imageView.getTag().equals(imageUrl)) {
+                            imageView.setImageBitmap(bitmap);
+                        }
+                    });
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }

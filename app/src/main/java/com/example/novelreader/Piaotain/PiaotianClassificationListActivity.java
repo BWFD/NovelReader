@@ -72,27 +72,24 @@ public class PiaotianClassificationListActivity extends AppCompatActivity {
     }
 
     public void updateUI() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String url = getIntent().getStringExtra("URL");
-                    List<PiaotianClassification> temp = Piaotian.getBookListByUrl(url,page);
-                    if(temp != null) {
-                        dataList.addAll(temp);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapter.notifyDataSetChanged();
-                                listView.invalidateViews();
-                                page = page + 1;
-                                notLoading = true;
-                            }
-                        });
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        new Thread(() -> {
+            try {
+                String url = getIntent().getStringExtra("URL");
+                List<PiaotianClassification> temp = Piaotian.getBookListByUrl(url,page);
+                if(temp != null) {
+                    dataList.addAll(temp);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                            listView.invalidateViews();
+                            page = page + 1;
+                            notLoading = true;
+                        }
+                    });
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }).start();
     }

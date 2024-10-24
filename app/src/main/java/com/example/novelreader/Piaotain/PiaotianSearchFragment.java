@@ -118,25 +118,22 @@ public class PiaotianSearchFragment extends Fragment {
         });
 
         Button submitButton = view.findViewById(R.id.searchSubmitButton);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                nofound.setVisibility(View.INVISIBLE);
-                if(String.valueOf(editText.getText()).length() < 2) {
-                    Toast.makeText(getActivity(), "請輸入至少兩個字元", Toast.LENGTH_LONG).show();
-                }
-                else {
+        submitButton.setOnClickListener(view -> {
+            nofound.setVisibility(View.INVISIBLE);
+            if(String.valueOf(editText.getText()).length() < 2) {
+                Toast.makeText(getActivity(), "請輸入至少兩個字元", Toast.LENGTH_LONG).show();
+            }
+            else {
 
-                    InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if (imm != null) {
-                        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-                    }
-
-                    listView.removeAllViews();
-                    getListAndUpdate();
-                    notLoading = false;
-                    page = 1;
+                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                 }
+
+                listView.removeAllViews();
+                getListAndUpdate();
+                notLoading = false;
+                page = 1;
             }
         });
 
@@ -155,71 +152,62 @@ public class PiaotianSearchFragment extends Fragment {
     }
 
     public void getListAndUpdate() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String keyword = String.valueOf(editText.getText());
+        new Thread(() -> {
+            String keyword = String.valueOf(editText.getText());
 
-                if(!keyword.equals("")) {
-                    try {
-                        dataList = Piaotian.getSearch(keyword, classification, page);
-                        //dataList.addAll(Piaotian.getMonthRank(page));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+            if(!keyword.equals("")) {
+                try {
+                    dataList = Piaotian.getSearch(keyword, classification, page);
+                    //dataList.addAll(Piaotian.getMonthRank(page));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            getActivity().runOnUiThread(() -> {
+                if(!dataList.isEmpty()) {
+                    dataList.forEach(piaotianClassification -> {
+                        Button button = new Button(getActivity());
+                        View bar = new View(getActivity());
+                        button.setText(piaotianClassification.getName() + "    作者: " + piaotianClassification.getAuthor());
+                        button.setTextColor(Color.WHITE);
+                        button.setTextSize(20);
+                        button.setBackgroundColor(Color.TRANSPARENT);
+                        button.setPadding(10,0,0,0);
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        );
+                        button.setGravity(Gravity.CENTER_VERTICAL);
+                        button.setLayoutParams(params);
+
+
+                        button.setOnClickListener(v -> {
+                            Intent intent = new Intent(getActivity(), PiaotianBookInfoActivity.class);
+                            intent.putExtra("URL",piaotianClassification.getHtml());
+                            startActivity(intent);
+                        });
+                        listView.addView(button);
+
+                        int color = ContextCompat.getColor(requireActivity(), R.color.light_blue_600);
+                        bar.setBackgroundColor(color);
+                        params = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                6
+                        );
+                        bar.setLayoutParams(params);
+                        listView.addView(bar);
+                    });
+                }
+                else {
+                    if(page == 1) {
+                        nofound.setVisibility(View.VISIBLE);
                     }
                 }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(!dataList.isEmpty()) {
-                            dataList.forEach(piaotianClassification -> {
-                                Button button = new Button(getActivity());
-                                View bar = new View(getActivity());
-                                button.setText(piaotianClassification.getName() + "    作者: " + piaotianClassification.getAuthor());
-                                button.setTextColor(Color.WHITE);
-                                button.setTextSize(20);
-                                button.setBackgroundColor(Color.TRANSPARENT);
-                                button.setPadding(10,0,0,0);
-                                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                                        LinearLayout.LayoutParams.MATCH_PARENT,
-                                        LinearLayout.LayoutParams.WRAP_CONTENT
-                                );
-                                button.setGravity(Gravity.CENTER_VERTICAL);
-                                button.setLayoutParams(params);
 
-
-                                button.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent(getActivity(), PiaotianBookInfoActivity.class);
-                                        intent.putExtra("URL",piaotianClassification.getHtml());
-                                        startActivity(intent);
-                                    }
-                                });
-                                listView.addView(button);
-
-                                int color = ContextCompat.getColor(requireActivity(), R.color.light_blue_600);
-                                bar.setBackgroundColor(color);
-                                params = new LinearLayout.LayoutParams(
-                                        LinearLayout.LayoutParams.MATCH_PARENT,
-                                        6
-                                );
-                                bar.setLayoutParams(params);
-                                listView.addView(bar);
-                            });
-                        }
-                        else {
-                            if(page == 1) {
-                                nofound.setVisibility(View.VISIBLE);
-                            }
-                        }
-
-                        page = page  + 1;
-                        notLoading = true;
-                        dataList = null;
-                    }
-                });
-            }
+                page = page  + 1;
+                notLoading = true;
+                dataList = null;
+            });
         }).start();
     }
 

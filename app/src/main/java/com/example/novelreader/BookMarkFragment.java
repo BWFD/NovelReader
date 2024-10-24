@@ -118,62 +118,53 @@ public class BookMarkFragment extends Fragment {
                 }
                 String finalTOTALHTML = TOTALHTML;
                 int finalScrolled = scrolled;
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(),ReaderActivity.class);
-                        intent.putExtra("currentHtml", finalUrl);
-                        intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(Arrays.asList(finalTOTALHTML.split(","))));
-                        intent.putExtra("isInBookMark","true");
-                        intent.putExtra("bookName", finalBookName);
-                        intent.putExtra("webSite", finalWebSite);
-                        intent.putExtra("scrolled", finalScrolled);
-                        startActivity(intent);
-                    }
+                button.setOnClickListener(view -> {
+                    Intent intent = new Intent(getActivity(),ReaderActivity.class);
+                    intent.putExtra("currentHtml", finalUrl);
+                    intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(Arrays.asList(finalTOTALHTML.split(","))));
+                    intent.putExtra("isInBookMark","true");
+                    intent.putExtra("bookName", finalBookName);
+                    intent.putExtra("webSite", finalWebSite);
+                    intent.putExtra("scrolled", finalScrolled);
+                    startActivity(intent);
                 });
 
 
                 button.setLongClickable(true);
-                button.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        PopupMenu popupMenu = new PopupMenu(getContext(), view);
-                        popupMenu.getMenuInflater().inflate(R.menu.bookmarkmenu, popupMenu.getMenu());
+                button.setOnLongClickListener(view -> {
+                    PopupMenu popupMenu = new PopupMenu(getContext(), view);
+                    popupMenu.getMenuInflater().inflate(R.menu.bookmarkmenu, popupMenu.getMenu());
 
-                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                int id = item.getItemId();
-                                if(id == R.id.deleteMark) {
-                                    getContext().getContentResolver().delete(uri,"TOTALHTML = ?", new String[]{finalTOTALHTML});
-                                    getContext().getContentResolver().notifyChange(uri, null);
-                                    update();
-                                    return true;
-                                }
-                                else
-                                if(id == R.id.openBook) {
-                                    Intent intent;
-                                    if(finalWebSite.equals("Piaotian")) {
-                                        intent = new Intent(getActivity(), PiaotianBookInfoActivity.class);
-                                        intent.putExtra("URL","CHAPTER:" + finalUrl);
-                                        startActivity(intent);
-                                    }
-                                    else
-                                    if(finalWebSite.equals("CZBooks")) {
-                                        intent = new Intent(getActivity(), CZBooksBookInfoActivity.class);
-                                        intent.putExtra("URL","CHAPTER:" + finalUrl);
-                                        startActivity(intent);
-                                    }
-                                    return true;
-                                }
-                                else {
-                                    return true;
-                                }
+                    popupMenu.setOnMenuItemClickListener(item -> {
+                        int id = item.getItemId();
+                        if(id == R.id.deleteMark) {
+                            getContext().getContentResolver().delete(uri,"TOTALHTML = ?", new String[]{finalTOTALHTML});
+                            getContext().getContentResolver().notifyChange(uri, null);
+                            update();
+                            return true;
+                        }
+                        else
+                        if(id == R.id.openBook) {
+                            Intent intent;
+                            if(finalWebSite.equals("Piaotian")) {
+                                intent = new Intent(getActivity(), PiaotianBookInfoActivity.class);
+                                intent.putExtra("URL","CHAPTER:" + finalUrl);
+                                startActivity(intent);
                             }
-                        });
-                        popupMenu.show();
-                        return true; // 返回 true 表示事件已處理，阻止單擊事件發生
-                    }
+                            else
+                            if(finalWebSite.equals("CZBooks")) {
+                                intent = new Intent(getActivity(), CZBooksBookInfoActivity.class);
+                                intent.putExtra("URL","CHAPTER:" + finalUrl);
+                                startActivity(intent);
+                            }
+                            return true;
+                        }
+                        else {
+                            return true;
+                        }
+                    });
+                    popupMenu.show();
+                    return true; // 返回 true 表示事件已處理，阻止單擊事件發生
                 });
 
                 bookmarkList.addView(button);

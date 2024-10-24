@@ -72,61 +72,52 @@ public class PiaotianBookInfoActivity extends AppCompatActivity {
     }
 
     public void getBookInfo(String url) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    bookInfo = Piaotian.getBookDetail(url);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        imageView.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.ic_launcher_round));
-                        loadImage(bookInfo.getImageURL(),imageView);
-                        bookName.setText(bookInfo.getName());
-                        bookAuthor.setText(bookInfo.getAuthor());
-                        bookDesc.setText(bookInfo.getDesc());
-
-                        chapterListAdapter = new ChapterListAdapter(activity,bookInfo.getChapterName(),bookInfo.getChapterHTML(), bookInfo.getName(),"Piaotian");
-                        chapterList.setAdapter(chapterListAdapter);
-
-                        chapterListAdapter.notifyDataSetChanged();
-                        chapterList.invalidateViews();
-                        loading.setVisibility(View.INVISIBLE);
-
-                    }
-                });
+        new Thread(() -> {
+            try {
+                bookInfo = Piaotian.getBookDetail(url);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    imageView.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.ic_launcher_round));
+                    loadImage(bookInfo.getImageURL(),imageView);
+                    bookName.setText(bookInfo.getName());
+                    bookAuthor.setText(bookInfo.getAuthor());
+                    bookDesc.setText(bookInfo.getDesc());
+
+                    chapterListAdapter = new ChapterListAdapter(activity,bookInfo.getChapterName(),bookInfo.getChapterHTML(), bookInfo.getName(),"Piaotian");
+                    chapterList.setAdapter(chapterListAdapter);
+
+                    chapterListAdapter.notifyDataSetChanged();
+                    chapterList.invalidateViews();
+                    loading.setVisibility(View.INVISIBLE);
+
+                }
+            });
         }).start();
     }
 
     private void loadImage(String imageUrl, ImageView imageView) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // 下載圖片
-                    URL url = new URL(imageUrl);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setDoInput(true);
-                    connection.connect();
-                    InputStream input = connection.getInputStream();
-                    final Bitmap bitmap = BitmapFactory.decodeStream(input);
+        executor.execute(() -> {
+            try {
+                // 下載圖片
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                final Bitmap bitmap = BitmapFactory.decodeStream(input);
 
-                    // 在主線程更新 UI
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (bitmap != null) {
-                                imageView.setImageBitmap(bitmap);
-                            }
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                // 在主線程更新 UI
+                handler.post(() -> {
+                    if (bitmap != null) {
+                        imageView.setImageBitmap(bitmap);
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }

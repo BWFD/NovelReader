@@ -127,29 +127,23 @@ public class WordSettingActivity extends AppCompatActivity {
             }
         });
 
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sizeSelect.setProgress(0);
-                RSelect.setProgress(170);
-                GSelect.setProgress(170);
-                BSelect.setProgress(170);
+        resetButton.setOnClickListener(view -> {
+            sizeSelect.setProgress(0);
+            RSelect.setProgress(170);
+            GSelect.setProgress(170);
+            BSelect.setProgress(170);
 
-            }
         });
 
-        confirm_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ContentValues values = new ContentValues();
-                int Size = Integer.parseInt(String.valueOf(sizeSelect.getProgress())) +15;
-                values.put("textSize",String.valueOf(Size));
-                values.put("textColor",String.format("#%02X%02X%02X", r, g, b));
-                String[] selectionArgs = new String[]{"only"};
-                getContentResolver().update(uri,values,"only = ?",selectionArgs);
+        confirm_button.setOnClickListener(view -> {
+            ContentValues values = new ContentValues();
+            int Size = Integer.parseInt(String.valueOf(sizeSelect.getProgress())) +15;
+            values.put("textSize",String.valueOf(Size));
+            values.put("textColor",String.format("#%02X%02X%02X", r, g, b));
+            String[] selectionArgs = new String[]{"only"};
+            getContentResolver().update(uri,values,"only = ?",selectionArgs);
 
-                finish();
-            }
+            finish();
         });
     }
 

@@ -82,14 +82,11 @@ public class PiaotianClassificationFragment extends Fragment {
             );
             button.setLayoutParams(params);
             // 設置按鈕的點擊事件
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), PiaotianClassificationListActivity.class);
-                    intent.putExtra("URL",classification.getHtml());
-                    intent.putExtra("title","飄天文學網 - " + classification.getName());
-                    startActivity(intent);
-                }
+            button.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), PiaotianClassificationListActivity.class);
+                intent.putExtra("URL",classification.getHtml());
+                intent.putExtra("title","飄天文學網 - " + classification.getName());
+                startActivity(intent);
             });
             layout.addView(button);
 

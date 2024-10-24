@@ -73,23 +73,15 @@ public class PiaotianMonthRankedFragment extends Fragment {
     }
 
     public void getMonthRankedList() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<PiaotianClassification> temp = Piaotian.getMonthRank(page);
-                    if(temp != null) {
-                        dataList.addAll(temp);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateUI();
-                            }
-                        });
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        new Thread(() -> {
+            try {
+                List<PiaotianClassification> temp = Piaotian.getMonthRank(page);
+                if(temp != null) {
+                    dataList.addAll(temp);
+                    getActivity().runOnUiThread(() -> updateUI());
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }).start();
     }

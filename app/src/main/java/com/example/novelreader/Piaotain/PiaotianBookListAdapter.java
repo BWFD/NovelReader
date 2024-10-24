@@ -39,13 +39,10 @@ public class PiaotianBookListAdapter extends ArrayAdapter<PiaotianClassification
         bookButton.setGravity(Gravity.CENTER_VERTICAL);
         bookButton.setTextSize(20);
         bookButton.setPadding(10,0,0,0);
-        bookButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, PiaotianBookInfoActivity.class);
-                intent.putExtra("URL",item.getHtml());
-                context.startActivity(intent);
-            }
+        bookButton.setOnClickListener(view -> {
+            Intent intent = new Intent(context, PiaotianBookInfoActivity.class);
+            intent.putExtra("URL",item.getHtml());
+            context.startActivity(intent);
         });
 
 
