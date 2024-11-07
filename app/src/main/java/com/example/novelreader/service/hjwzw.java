@@ -62,10 +62,16 @@ public class hjwzw {
             System.out.println("Request failed with code: " + response.code());
         }
         Elements elements = document.select("div.wd4 a");
-        int maxPage = Integer.parseInt(elements.get(elements.size()-3).text());
+        int maxPage = 1 ;
+        String []temp = elements.get(elements.size()-1).attr("href").split("_");
+        if(temp[temp.length-1].matches("\\d+")) {
+            maxPage = Integer.parseInt(temp[temp.length-1]);
+        }
+
         if(page > maxPage) {
             return null;
         }
+
         elements = document.select("tbody tr td table tbody tr td");
         for(int i = 0; i < elements.size(); i+=1) {
             if (elements.get(i).select("div a img").attr("src").equals("")) {
