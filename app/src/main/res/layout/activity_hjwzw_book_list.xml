@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".hjwzw.hjwzwBookListActivity">
+
+    <TextView android:id="@+id/MonthRankedLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:text="載入中..."
+        android:textColor="@color/white"
+        android:textSize="40dp"
+        android:gravity="center"
+        android:paddingBottom="90dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        />
+
+
+    <TextView
+        android:id="@+id/ClassificationInnerListTitle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/topline"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:gravity="center" />
+
+    <View
+        android:id="@+id/topline"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="50dp"/>
+
+    <ListView
+        android:id="@+id/ClassificationInnerList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fastScrollAlwaysVisible="false"
+        android:fastScrollEnabled="true"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="20dp"
+        android:scrollbarSize="10dp"
+        android:scrollbarStyle="outsideOverlay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topline"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

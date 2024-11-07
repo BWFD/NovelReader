@@ -16,6 +16,12 @@
         android:theme="@style/Theme.NovelReader"
         tools:targetApi="31">
         <activity
+            android:name=".hjwzw.hjwzwBookListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hjwzw.hjwzwInfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ErrorTestActivity"
             android:exported="false" />
         <activity

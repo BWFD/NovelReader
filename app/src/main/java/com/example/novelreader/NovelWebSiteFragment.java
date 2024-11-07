@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import com.example.novelreader.CZBooks.CZBooksInfoActivity;
 import com.example.novelreader.Piaotain.PiaotianInfoActivity;
+import com.example.novelreader.hjwzw.hjwzwInfoActivity;
 
 
 public class NovelWebSiteFragment extends Fragment {
@@ -24,6 +25,7 @@ public class NovelWebSiteFragment extends Fragment {
 
         Button piaotian = view.findViewById(R.id.piaotian);
         Button czBooks = view.findViewById(R.id.CZBooks);
+        Button hjwzw = view.findViewById(R.id.hjwzw);
         Button setting = view.findViewById(R.id.setting);
         Button errorTest = view.findViewById(R.id.errorTest);
 
@@ -36,6 +38,11 @@ public class NovelWebSiteFragment extends Fragment {
 
         czBooks.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), CZBooksInfoActivity.class);
+            startActivity(intent);
+        });
+
+        hjwzw.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), hjwzwInfoActivity.class);
             startActivity(intent);
         });
 
