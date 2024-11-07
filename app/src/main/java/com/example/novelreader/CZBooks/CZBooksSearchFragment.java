@@ -52,6 +52,7 @@ public class CZBooksSearchFragment extends Fragment {
     private int page;
     EditText editText;
     CZBooksBookListAdapter adapter;
+    TextView noFound;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +70,8 @@ public class CZBooksSearchFragment extends Fragment {
         adapter = new CZBooksBookListAdapter(getActivity(),dataList);
 
         listView.setAdapter(adapter);
+
+        noFound = view.findViewById(R.id.NoFound);
 
         editText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -97,6 +100,7 @@ public class CZBooksSearchFragment extends Fragment {
             if (imm != null) {
                 imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
             }
+            noFound.setVisibility(View.INVISIBLE);
             dataList.clear();
             adapter.notifyDataSetChanged();
             listView.invalidateViews();
@@ -135,6 +139,11 @@ public class CZBooksSearchFragment extends Fragment {
                 if(temp != null) {
                     dataList.addAll(temp);
                     getActivity().runOnUiThread(() -> updateUI());
+                }
+                if(temp == null && page == 1) {
+                    getActivity().runOnUiThread(() ->{
+                        noFound.setVisibility(View.VISIBLE);
+                    });
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
