@@ -21,6 +21,7 @@ public class ErrorTestActivity extends AppCompatActivity {
     Activity activity = this;
     private Button piaotian;
     private Button czbooks;
+    private Button hjwzw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class ErrorTestActivity extends AppCompatActivity {
 
         piaotian = findViewById(R.id.piaotian);
         czbooks = findViewById(R.id.czbooks);
-
+        hjwzw = findViewById(R.id.hjwzw);
         piaotian.setOnClickListener(view -> {
             String url = "https://www.piaotia.com/";
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -61,5 +62,18 @@ public class ErrorTestActivity extends AppCompatActivity {
             }
 
         });
+
+        hjwzw.setOnClickListener(view ->{
+            String url = "https://tw.hjwzw.com/";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            try {
+                Intent chooser = Intent.createChooser(intent, "選擇瀏覽器開啟網站");
+                startActivity(chooser);
+            }catch (ActivityNotFoundException e) {
+                Toast.makeText(activity, "網站開啟失敗", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
