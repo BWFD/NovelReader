@@ -89,6 +89,11 @@ public class hjwzw {
 
     public static hjwzwBookDetail getBookInfo(String url) throws IOException {
         String basicURL = "https://tw.hjwzw.com";
+
+        if(url.startsWith("CHAPTER:")) {
+            url = basicURL + url.replace("CHAPTER:","").split(",")[0].replace("/Read","");
+        }
+        System.out.println(url);
         hjwzwBookDetail bookDetail = new hjwzwBookDetail();
         Request request = new Request.Builder()
                 .url(url)

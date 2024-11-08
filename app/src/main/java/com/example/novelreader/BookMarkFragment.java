@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.novelreader.CZBooks.CZBooksBookInfoActivity;
 import com.example.novelreader.Piaotain.PiaotianBookInfoActivity;
+import com.example.novelreader.hjwzw.hjwzwBookInfoActivity;
 import com.example.novelreader.service.Piaotian;
 
 import java.io.IOException;
@@ -158,6 +159,12 @@ public class BookMarkFragment extends Fragment {
                             else
                             if(finalWebSite.equals("CZBooks")) {
                                 intent = new Intent(getActivity(), CZBooksBookInfoActivity.class);
+                                intent.putExtra("URL","CHAPTER:" + finalUrl);
+                                startActivity(intent);
+                            }
+                            else
+                            if(finalWebSite.equals("hjwzw")) {
+                                intent = new Intent(getActivity(), hjwzwBookInfoActivity.class);
                                 intent.putExtra("URL","CHAPTER:" + finalUrl);
                                 startActivity(intent);
                             }
