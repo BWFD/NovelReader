@@ -126,7 +126,7 @@ public class BookMarkFragment extends Fragment {
                 button.setOnClickListener(view -> {
                     Intent intent = new Intent(getActivity(),ReaderActivity.class);
                     intent.putExtra("currentHtml", finalUrl);
-                    intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(Arrays.asList(finalTOTALHTML.split(","))));
+                    intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(Arrays.asList(finalTOTALHTML.split("\\|"))));
                     intent.putExtra("isInBookMark","true");
                     intent.putExtra("bookName", finalBookName);
                     intent.putExtra("webSite", finalWebSite);

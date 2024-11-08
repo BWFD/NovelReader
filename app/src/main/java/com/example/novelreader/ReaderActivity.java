@@ -291,7 +291,7 @@ public class ReaderActivity extends AppCompatActivity {
             values.put("webSite",webSite);
             values.put("chapterName",book[0]);
             values.put("chapterUrl",url);
-            values.put("TOTALHTML", TextUtils.join(",", TOTALHTML));
+            values.put("TOTALHTML", TextUtils.join("|", TOTALHTML));
             values.put("scrolled",scrollView.getScrollY());
 
             activity.getContentResolver().insert(uri,values);
