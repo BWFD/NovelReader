@@ -83,7 +83,7 @@ public class hjwzwBooksAdapter extends ArrayAdapter<hjwzwClassification> {
         bookButton.setTextSize(20);
         bookButton.setPadding(10,0,0,0);
         bookButton.setOnClickListener(view -> {
-            Intent intent = new Intent(context, hjwzwBookListActivity.class);
+            Intent intent = new Intent(context, hjwzwBookInfoActivity.class);
             intent.putExtra("URL",item.getUrl());
             context.startActivity(intent);
         });

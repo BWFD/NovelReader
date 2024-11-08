@@ -27,8 +27,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.novelreader.CZBooks.CZBooksBookInfoActivity;
 import com.example.novelreader.Piaotain.PiaotianBookInfoActivity;
+import com.example.novelreader.hjwzw.hjwzwInfoActivity;
 import com.example.novelreader.service.CZBooks;
 import com.example.novelreader.service.Piaotian;
+import com.example.novelreader.service.hjwzw;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -96,6 +98,13 @@ public class ReaderActivity extends AppCompatActivity {
                     else
                     if(webSite.equals("CZBooks")) {
                         intent = new Intent(activity, CZBooksBookInfoActivity.class);
+                        intent.putExtra("URL","CHAPTER:" + url);
+                        startActivity(intent);
+                        finish();
+                    }
+                    else
+                    if(webSite.equals("hjwzw")) {
+                        intent = new Intent(activity, hjwzwInfoActivity.class);
                         intent.putExtra("URL","CHAPTER:" + url);
                         startActivity(intent);
                         finish();
@@ -217,6 +226,10 @@ public class ReaderActivity extends AppCompatActivity {
                     else
                     if(webSite.equals("CZBooks")) {
                         book = CZBooks.getChapter(url);
+                    }
+                    else
+                    if(webSite.equals("hjwzw")) {
+                        book = hjwzw.getChapter(url);
                     }
                     else {
                         book = null;

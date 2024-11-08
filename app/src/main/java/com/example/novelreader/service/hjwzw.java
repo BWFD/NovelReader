@@ -1,5 +1,6 @@
 package com.example.novelreader.service;
 
+import com.example.novelreader.dao.hjwzwBookDetail;
 import com.example.novelreader.dao.hjwzwClassification;
 
 import org.jsoup.Jsoup;
@@ -73,6 +74,7 @@ public class hjwzw {
         }
 
         elements = document.select("tbody tr td table tbody tr td");
+        if(elements.isEmpty()) return null;
         for(int i = 0; i < elements.size(); i+=1) {
             if (elements.get(i).select("div a img").attr("src").equals("")) {
                 continue;
@@ -83,5 +85,86 @@ public class hjwzw {
                     elements.get(i+2).select("span.wd7 a").attr("title")));
         }
         return  bookList;
+    }
+
+    public static hjwzwBookDetail getBookInfo(String url) throws IOException {
+        String basicURL = "https://tw.hjwzw.com";
+        hjwzwBookDetail bookDetail = new hjwzwBookDetail();
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        Document document = null;
+        Response response = client.newCall(request).execute();
+        if(response.isSuccessful()){
+            document = Jsoup.parse(response.body().byteStream(), "UTF-8", url);
+        }else {
+            System.out.println("Request failed with code: " + response.code());
+        }
+        Elements elements = document.select("h1");
+        bookDetail.setName(elements.get(0).text());
+
+        elements = document.select("table tbody tr td table tbody tr td div");
+        bookDetail.setAuthor("作者 : " + elements.select("a[title*=作者標簽]").first().text());
+        String temp[] = elements.text().split("【內容簡介】");
+        bookDetail.setDesc(temp[1]);
+
+        elements = document.select("table tbody tr td table tbody tr td div img");
+        bookDetail.setImageURL(basicURL + elements.get(0).attr("src"));
+
+
+        List<String> name = new ArrayList<>();
+        List<String> html = new ArrayList<>();
+
+        url = url.replace("Book", "Book/Chapter");
+        request = new Request.Builder()
+                .url(url)
+                .build();
+        document = null;
+        response = client.newCall(request).execute();
+        if(response.isSuccessful()){
+            document = Jsoup.parse(response.body().byteStream(), "UTF-8", url);
+        }else {
+            System.out.println("Request failed with code: " + response.code());
+        }
+        elements = document.select("div[id=tbchapterlist] table tbody tr td a");
+        elements.forEach(e ->{
+            name.add(e.text());
+            html.add(e.attr("href"));
+        });
+
+        bookDetail.setChapterName(name);
+        bookDetail.setChapterHTML(html);
+
+        return bookDetail;
+    }
+
+    public static String[] getChapter(String url) throws IOException {
+        String[] book = new String[2];
+        String basicURL = "https://tw.hjwzw.com";
+        Request request = new Request.Builder()
+                .url(basicURL + url)
+                .build();
+
+        Document document = null;
+        Response response = client.newCall(request).execute();
+        if(response.isSuccessful()){
+            document = Jsoup.parse(response.body().byteStream(), "UTF-8", url);
+        }else {
+            System.out.println("Request failed with code: " + response.code());
+        }
+        Elements elements = document.select("h1");
+        book[0] = elements.text();
+
+        elements = document.select("table tbody tr td div[style=font-size: 20px; line-height: 30px; word-wrap: break-word; table-layout: fixed; word-break: break-all; width: 750px; margin: 0 auto; text-indent: 2em;]");
+        String html = elements.get(0).html();
+        String temp[] = html.split("</p>");
+        html = "";
+        for (int i = 2; i < temp.length-2; i++) {
+            //System.out.println(book[i]);
+            html = html + temp[i].replace("<p>","\n").replace("<br>","");
+        }
+        book[1] = html;
+        return book;
     }
 }

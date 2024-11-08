@@ -83,6 +83,10 @@ public class BookMarkFragment extends Fragment {
                     if(Objects.equals(webSite, "CZBooks")) {
                         text = text + "-" + "小說狂人";
                     }
+                    else
+                    if(Objects.equals(webSite, "hjwzw")) {
+                        text = text + "-" + "黃金屋中文網";
+                    }
                     else  {
                         text = text + "-" + webSite;
                     }

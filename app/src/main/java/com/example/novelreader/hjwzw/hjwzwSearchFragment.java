@@ -14,6 +14,7 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.novelreader.R;
 import com.example.novelreader.dao.hjwzwClassification;
@@ -34,6 +35,7 @@ public class hjwzwSearchFragment extends Fragment {
     private int page;
     EditText editText;
     hjwzwBooksAdapter adapter;
+    TextView noFound;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +51,8 @@ public class hjwzwSearchFragment extends Fragment {
         editText = view.findViewById(R.id.searchText);
 
         adapter = new hjwzwBooksAdapter(getActivity(),dataList);
+
+        noFound = view.findViewById(R.id.NoFound);
 
         listView.setAdapter(adapter);
 
@@ -79,6 +83,7 @@ public class hjwzwSearchFragment extends Fragment {
             if (imm != null) {
                 imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
             }
+            noFound.setVisibility(View.INVISIBLE);
             dataList.clear();
             adapter.notifyDataSetChanged();
             listView.invalidateViews();
@@ -117,6 +122,11 @@ public class hjwzwSearchFragment extends Fragment {
                 if(temp != null) {
                     dataList.addAll(temp);
                     getActivity().runOnUiThread(() -> updateUI());
+                }
+                if(temp == null && page ==1) {
+                    getActivity().runOnUiThread(() -> {
+                        noFound.setVisibility(View.VISIBLE);
+                    });
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
