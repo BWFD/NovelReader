@@ -49,31 +49,33 @@ public class ChapterListAdapter extends ArrayAdapter<String> {
         button.setGravity(Gravity.CENTER_VERTICAL);
         button.setTextSize(18);
         button.setPadding(10,0,0,0);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, ReaderActivity.class);
-                intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(html));
-                intent.putExtra("currentHtml", html.get(position));
-                intent.putExtra("isInBookMark","false");
-                intent.putExtra("bookName", bookName);
-                intent.putExtra("webSite",webSite);
+        button.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ReaderActivity.class);
+            intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(html));
+            intent.putExtra("currentHtml", html.get(position));
+            intent.putExtra("isInBookMark","false");
+            intent.putExtra("bookName", bookName);
+            intent.putExtra("webSite",webSite);
 
-                cursor = context.getContentResolver().query(uri, null, null, null, null);
-                if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        int index = cursor.getColumnIndex("TOTALHTML");
-                        if(index != -1) {
-                            String TOTALHTML = TextUtils.join(",", new ArrayList<>(html));
-                            if(cursor.getString(index).equals(TOTALHTML)) {
-                                intent.putExtra("isInBookMark", "true");
+            cursor = context.getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    int index = cursor.getColumnIndex("TOTALHTML");
+                    if(index != -1) {
+                        String TOTALHTML = TextUtils.join("|", new ArrayList<>(html));
+                        if(cursor.getString(index).equals(TOTALHTML)) {
+                            intent.putExtra("isInBookMark", "true");
+                            index = cursor.getColumnIndex("_id");
+                            if (index != -1) {
+                                long id = cursor.getInt(index);
+                                intent.putExtra("id",id);
                             }
                         }
                     }
                 }
-                cursor.close();
-                context.startActivity(intent);
             }
+            cursor.close();
+            context.startActivity(intent);
         });
 
         return listItemView;

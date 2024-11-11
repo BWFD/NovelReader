@@ -68,6 +68,7 @@ public class BookMarkFragment extends Fragment {
                 String TOTALHTML = "";
                 String webSite = "";
                 int scrolled = 0;
+                long id = 0;
                 Button button = new Button(getActivity());
                 int index = cursor.getColumnIndex("bookName");
                 if (index != -1) {
@@ -121,8 +122,13 @@ public class BookMarkFragment extends Fragment {
                 if (index != -1) {
                     scrolled = cursor.getInt(index);
                 }
+                index = cursor.getColumnIndex("_id");
+                if (index != -1) {
+                    id = cursor.getInt(index);
+                }
                 String finalTOTALHTML = TOTALHTML;
                 int finalScrolled = scrolled;
+                long finialId = id;
                 button.setOnClickListener(view -> {
                     Intent intent = new Intent(getActivity(),ReaderActivity.class);
                     intent.putExtra("currentHtml", finalUrl);
@@ -131,6 +137,7 @@ public class BookMarkFragment extends Fragment {
                     intent.putExtra("bookName", finalBookName);
                     intent.putExtra("webSite", finalWebSite);
                     intent.putExtra("scrolled", finalScrolled);
+                    intent.putExtra("id",finialId);
                     startActivity(intent);
                 });
 
@@ -141,15 +148,15 @@ public class BookMarkFragment extends Fragment {
                     popupMenu.getMenuInflater().inflate(R.menu.bookmarkmenu, popupMenu.getMenu());
 
                     popupMenu.setOnMenuItemClickListener(item -> {
-                        int id = item.getItemId();
-                        if(id == R.id.deleteMark) {
+                        int popupMenuId = item.getItemId();
+                        if(popupMenuId == R.id.deleteMark) {
                             getContext().getContentResolver().delete(uri,"TOTALHTML = ?", new String[]{finalTOTALHTML});
                             getContext().getContentResolver().notifyChange(uri, null);
                             update();
                             return true;
                         }
                         else
-                        if(id == R.id.openBook) {
+                        if(popupMenuId == R.id.openBook) {
                             Intent intent;
                             if(finalWebSite.equals("Piaotian")) {
                                 intent = new Intent(getActivity(), PiaotianBookInfoActivity.class);

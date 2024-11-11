@@ -162,14 +162,17 @@ public class hjwzw {
         book[0] = elements.text();
 
         elements = document.select("table tbody tr td div[style=font-size: 20px; line-height: 30px; word-wrap: break-word; table-layout: fixed; word-break: break-all; width: 750px; margin: 0 auto; text-indent: 2em;]");
-        String html = elements.get(0).html();
-        String temp[] = html.split("</p>");
-        html = "";
-        for (int i = 2; i < temp.length-2; i++) {
-            //System.out.println(book[i]);
-            html = html + temp[i].replace("<p>","\n").replace("<br>","");
+        StringBuilder html = new StringBuilder(elements.get(0).html());
+        String temp[] = html.toString().split("</p>");
+        html = new StringBuilder();
+        for (int i = 2; i < temp.length; i++) {
+            if(temp[i].isEmpty() || temp[i].equals("<p>") || temp[i].equals(" \n<br>\n<p>")) {
+                continue;
+            }
+
+            html.append(temp[i].replace("<p>", "\n").replace("<br>", ""));
         }
-        book[1] = html;
+        book[1] = html.toString();
         return book;
     }
 }

@@ -134,9 +134,9 @@ public class ReaderActivity extends AppCompatActivity {
                     values.put("chapterName",book[0]);
                     values.put("chapterUrl",url);
                     values.put("scrolled",scrollView.getScrollY());
-                    String[] selectionArgs = new String[]{getIntent().getStringExtra("bookName")};
+                    String[] selectionArgs = new String[]{String.valueOf(getIntent().getLongExtra("id",-1))};
 
-                    getContentResolver().update(uri, values, "bookName = ?",selectionArgs);
+                    getContentResolver().update(uri, values, "_id = ?",selectionArgs);
                     getContentResolver().notifyChange(uri, null);
                     finish();
                 }
@@ -165,6 +165,7 @@ public class ReaderActivity extends AppCompatActivity {
                 intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                 intent.putExtra("webSite",webSite);
                 intent.putExtra("scrolled",0);
+                intent.putExtra("id",getIntent().getLongExtra("id",-1));
                 startActivity(intent);
                 finish();
             });
@@ -181,6 +182,7 @@ public class ReaderActivity extends AppCompatActivity {
                 intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                 intent.putExtra("webSite",webSite);
                 intent.putExtra("scrolled",0);
+                intent.putExtra("id",getIntent().getLongExtra("id",-1));
                 startActivity(intent);
                 finish();
             });
@@ -194,6 +196,7 @@ public class ReaderActivity extends AppCompatActivity {
                 intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                 intent.putExtra("webSite",webSite);
                 intent.putExtra("scrolled",0);
+                intent.putExtra("id",getIntent().getLongExtra("id",-1));
                 startActivity(intent);
                 finish();
             });
@@ -206,6 +209,7 @@ public class ReaderActivity extends AppCompatActivity {
                 intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                 intent.putExtra("webSite",webSite);
                 intent.putExtra("scrolled",0);
+                intent.putExtra("id",getIntent().getLongExtra("id",-1));
                 startActivity(intent);
                 finish();
             });
@@ -216,61 +220,55 @@ public class ReaderActivity extends AppCompatActivity {
     }
 
     public void updateBook(String url) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if(webSite.equals("Piaotian")) {
-                        book = Piaotian.getChapter(url);
-                    }
-                    else
-                    if(webSite.equals("CZBooks")) {
-                        book = CZBooks.getChapter(url);
-                    }
-                    else
-                    if(webSite.equals("hjwzw")) {
-                        book = hjwzw.getChapter(url);
-                    }
-                    else {
-                        book = null;
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        new Thread(() -> {
+            try {
+                if(webSite.equals("Piaotian")) {
+                    book = Piaotian.getChapter(url);
+                }
+                else
+                if(webSite.equals("CZBooks")) {
+                    book = CZBooks.getChapter(url);
+                }
+                else
+                if(webSite.equals("hjwzw")) {
+                    book = hjwzw.getChapter(url);
+                }
+                else {
+                    book = null;
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            runOnUiThread(() -> {
+                title.setText(book[0]);
+                if(book[1] != null && book[1].isEmpty()) {
+                    textView.setText("來源網站排版有問題，建議到別的網站觀看!!!");
+                    textView.setTextSize(40);
+                    textView.setGravity(Gravity.CENTER_VERTICAL);
+                }
+                else {
+                    textView.setText(book[1]);
+                    loading.setText("");
+                    loading.setVisibility(View.INVISIBLE);
+                    scrollView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollView.smoothScrollTo(0, getIntent().getIntExtra("scrolled",0));  // 平滑滾動到指定位置
+                        }
+                    });
+
                 }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        title.setText(book[0]);
-                        if(book[1] != null && book[1].isEmpty()) {
-                            textView.setText("來源網站排版有問題，建議到別的網站觀看!!!");
-                            textView.setTextSize(40);
-                            textView.setGravity(Gravity.CENTER_VERTICAL);
-                        }
-                        else {
-                            textView.setText(book[1]);
-                            loading.setText("");
-                            loading.setVisibility(View.INVISIBLE);
-                            scrollView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scrollView.smoothScrollTo(0, getIntent().getIntExtra("scrolled",0));  // 平滑滾動到指定位置
-                                }
-                            });
+                ContentValues values = new ContentValues();
+                values.put("chapterName",book[0]);
+                values.put("chapterUrl",url);
+                values.put("scrolled",scrollView.getScrollY());
+                String[] selectionArgs = new String[]{String.valueOf(getIntent().getLongExtra("id",-1))};
 
-                        }
-
-                        ContentValues values = new ContentValues();
-                        values.put("chapterName",book[0]);
-                        values.put("chapterUrl",url);
-                        values.put("scrolled",scrollView.getScrollY());
-                        String[] selectionArgs = new String[]{getIntent().getStringExtra("bookName")};
-
-                        getContentResolver().update(uri, values, "bookName = ?",selectionArgs);
-                        getContentResolver().notifyChange(uri, null);
-                    }
-                });
-            }
+                getContentResolver().update(uri, values, "_id = ?",selectionArgs);
+                getContentResolver().notifyChange(uri, null);
+            });
         }).start();
     }
 
@@ -330,9 +328,10 @@ public class ReaderActivity extends AppCompatActivity {
         values.put("chapterName",book[0]);
         values.put("chapterUrl",url);
         values.put("scrolled",scrollView.getScrollY());
-        String[] selectionArgs = new String[]{getIntent().getStringExtra("bookName")};
+        String[] selectionArgs = new String[]{String.valueOf(getIntent().getLongExtra("id",-1))};
 
-        getContentResolver().update(uri, values, "bookName = ?",selectionArgs);
+
+        getContentResolver().update(uri, values, "_id = ?",selectionArgs);
         getContentResolver().notifyChange(uri, null);
     }
 }
