@@ -65,6 +65,7 @@ public class BookMarkFragment extends Fragment {
                 String text = "";
                 String url = "";
                 String bookName = "";
+                String chapterName;
                 String TOTALHTML = "";
                 String webSite = "";
                 int scrolled = 0;
@@ -95,7 +96,10 @@ public class BookMarkFragment extends Fragment {
                 }
                 index = cursor.getColumnIndex("chapterName");
                 if (index != -1) {
+                    chapterName = cursor.getString(index);
                     text = text + "\n" + cursor.getString(index);
+                } else {
+                    chapterName = "NULL";
                 }
                 button.setText(text);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -175,6 +179,14 @@ public class BookMarkFragment extends Fragment {
                                 intent.putExtra("URL","CHAPTER:" + finalUrl);
                                 startActivity(intent);
                             }
+                            return true;
+                        }
+                        else
+                        if(popupMenuId == R.id.editPosition) {
+                            Intent intent = new Intent(getActivity(), BookMarkEditPositionActivity.class);
+                            intent.putExtra("id",finialId);
+
+                            startActivity(intent);
                             return true;
                         }
                         else {

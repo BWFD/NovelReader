@@ -16,6 +16,9 @@
         android:theme="@style/Theme.NovelReader"
         tools:targetApi="31">
         <activity
+            android:name=".BookMarkEditPositionActivity"
+            android:exported="false" />
+        <activity
             android:name=".hjwzw.hjwzwBookInfoActivity"
             android:exported="false" />
         <activity
