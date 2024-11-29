@@ -48,7 +48,9 @@ public class CZBooksClassificationFragment extends Fragment {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                requireActivity().runOnUiThread(() -> createButtons(classificationList));
+                if(isAdded() && getContext() != null) {
+                    requireActivity().runOnUiThread(() -> createButtons(classificationList));
+                }
             }
         }).start();
     }

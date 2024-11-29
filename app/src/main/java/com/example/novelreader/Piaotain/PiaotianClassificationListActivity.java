@@ -1,5 +1,6 @@
 package com.example.novelreader.Piaotain;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.AbsListView;
 import android.widget.ListView;
@@ -27,6 +28,7 @@ public class PiaotianClassificationListActivity extends AppCompatActivity {
     private List<PiaotianClassification> dataList;
     PiaotianBookListAdapter adapter;
     private TextView title;
+    private float thumbPos = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,6 @@ public class PiaotianClassificationListActivity extends AppCompatActivity {
 
         notLoading = false;
         updateUI();
-
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
@@ -60,6 +61,7 @@ public class PiaotianClassificationListActivity extends AppCompatActivity {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                thumbPos = (float) (firstVisibleItem + visibleItemCount / 2) / totalItemCount;
                 if (firstVisibleItem + visibleItemCount == totalItemCount) {
                     // 到达底部，加载更多数据
                     if(notLoading) {

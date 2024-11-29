@@ -163,51 +163,52 @@ public class PiaotianSearchFragment extends Fragment {
                     throw new RuntimeException(e);
                 }
             }
-            getActivity().runOnUiThread(() -> {
-                if(!dataList.isEmpty()) {
-                    dataList.forEach(piaotianClassification -> {
-                        Button button = new Button(getActivity());
-                        View bar = new View(getActivity());
-                        button.setText(piaotianClassification.getName() + "    作者: " + piaotianClassification.getAuthor());
-                        button.setTextColor(Color.WHITE);
-                        button.setTextSize(20);
-                        button.setBackgroundColor(Color.TRANSPARENT);
-                        button.setPadding(10,0,0,0);
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT
-                        );
-                        button.setGravity(Gravity.CENTER_VERTICAL);
-                        button.setLayoutParams(params);
+            if(isAdded() && getContext() != null) {
+                getActivity().runOnUiThread(() -> {
+                    if (!dataList.isEmpty()) {
+                        dataList.forEach(piaotianClassification -> {
+                            Button button = new Button(getActivity());
+                            View bar = new View(getActivity());
+                            button.setText(piaotianClassification.getName() + "    作者: " + piaotianClassification.getAuthor());
+                            button.setTextColor(Color.WHITE);
+                            button.setTextSize(20);
+                            button.setBackgroundColor(Color.TRANSPARENT);
+                            button.setPadding(10, 0, 0, 0);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                            );
+                            button.setGravity(Gravity.CENTER_VERTICAL);
+                            button.setLayoutParams(params);
 
 
-                        button.setOnClickListener(v -> {
-                            Intent intent = new Intent(getActivity(), PiaotianBookInfoActivity.class);
-                            intent.putExtra("URL",piaotianClassification.getHtml());
-                            startActivity(intent);
+                            button.setOnClickListener(v -> {
+                                Intent intent = new Intent(getActivity(), PiaotianBookInfoActivity.class);
+                                intent.putExtra("URL", piaotianClassification.getHtml());
+                                startActivity(intent);
+                            });
+                            listView.addView(button);
+
+                            int color = ContextCompat.getColor(requireActivity(), R.color.light_blue_600);
+                            bar.setBackgroundColor(color);
+                            params = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    6
+                            );
+                            bar.setLayoutParams(params);
+                            listView.addView(bar);
                         });
-                        listView.addView(button);
-
-                        int color = ContextCompat.getColor(requireActivity(), R.color.light_blue_600);
-                        bar.setBackgroundColor(color);
-                        params = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                6
-                        );
-                        bar.setLayoutParams(params);
-                        listView.addView(bar);
-                    });
-                }
-                else {
-                    if(page == 1) {
-                        nofound.setVisibility(View.VISIBLE);
+                    } else {
+                        if (page == 1) {
+                            nofound.setVisibility(View.VISIBLE);
+                        }
                     }
-                }
 
-                page = page  + 1;
-                notLoading = true;
-                dataList = null;
-            });
+                    page = page + 1;
+                    notLoading = true;
+                    dataList = null;
+                });
+            }
         }).start();
     }
 

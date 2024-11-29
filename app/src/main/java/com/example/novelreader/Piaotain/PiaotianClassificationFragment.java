@@ -32,7 +32,7 @@ public class PiaotianClassificationFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // 為此 Fragment 加載佈局
         view = inflater.inflate(R.layout.fragment_piaotian_classification, container, false);
-        if(isAdded()) {
+        if(isAdded() && getContext() != null) {
             getClassification(getActivity());
         }
         return view;
@@ -47,7 +47,7 @@ public class PiaotianClassificationFragment extends Fragment {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                if(isAdded()) {
+                if(isAdded() && getContext() != null) {
                     requireActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
