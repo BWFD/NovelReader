@@ -83,7 +83,7 @@ public class Piaotian {
                     //bookAuthor
                     //System.out.println(bookInfo.get(2).text());
                     monthRank.add(new PiaotianClassification(
-                            "https://www.piaotia.com" + bookInfo.get(0).select("a").attr("href"),
+                            "https://www.piaotia.com" + bookInfo.get(0).select("a").attr("href").replace("https://www.piaotia.com",""),
                             Translate.chs2cht(bookInfo.get(0).text()),
                             Translate.chs2cht(bookInfo.get(2).text())
                     ));
