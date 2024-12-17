@@ -144,8 +144,9 @@ public class CZBooks {
             book[0] = document.select("div.name").get(0).text();
             book[1]= "";
             Arrays.stream(elements.get(0).html().split("<br>")).forEach(str ->{
-               book[1] = book[1] + str.replace("  ","").replace("　　","");
-
+                if(str.equals(" \n")) return;
+                book[1] = book[1] + str.replace("  ","").replace("　　","") + "\n";
+                System.out.println("|" + str + "G" + str.length());
             });
         }
         else {
