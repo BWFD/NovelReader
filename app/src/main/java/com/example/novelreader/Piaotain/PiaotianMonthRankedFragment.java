@@ -91,6 +91,7 @@ public class PiaotianMonthRankedFragment extends Fragment {
         listView.setVisibility(View.VISIBLE);
         loading.setVisibility(View.INVISIBLE);
         listView.invalidateViews();
+        listView.setSelection(listView.getFirstVisiblePosition());
         page = page + 1;
         notLoading = true;
     }

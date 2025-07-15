@@ -127,6 +127,7 @@ public class CZBooksBookListFragment extends Fragment {
         adapter.notifyDataSetChanged();
         listView.setVisibility(View.VISIBLE);
         loading.setVisibility(View.INVISIBLE);
+        listView.setSelection(listView.getFirstVisiblePosition());
         listView.invalidateViews();
         page = page + 1;
         notLoading = true;
