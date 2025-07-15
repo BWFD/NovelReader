@@ -65,7 +65,7 @@ public class CZBooks {
 
 
             Elements elements = document.select("ul.nav.novel-list div.novel-item");
-            if(elements.size() == 0) return null;
+            if(elements.isEmpty()) return null;
             elements.forEach(element -> {
                 booklist.add(new CZBooksClassification(element.select("div.novel-item-title").text(),
                         element.select("a").attr("href"),

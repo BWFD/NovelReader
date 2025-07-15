@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -64,6 +65,7 @@ public class hjwzw {
         }
         Elements elements = document.select("div.wd4 a");
         int maxPage = 1 ;
+        if(elements.isEmpty()) return null;
         String []temp = elements.get(elements.size()-1).attr("href").split("_");
         if(temp[temp.length-1].matches("\\d+")) {
             maxPage = Integer.parseInt(temp[temp.length-1]);
