@@ -137,7 +137,7 @@ public class hjwzwSearchFragment extends Fragment {
     public void updateUI() {
         adapter.notifyDataSetChanged();
         listView.setVisibility(View.VISIBLE);
-        listView.setSelection(listView.getFirstVisiblePosition());
+        listView.setSelection(listView.getScrollY());
         listView.invalidateViews();
         page = page + 1;
         notLoading = true;

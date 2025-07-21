@@ -84,7 +84,7 @@ public class PiaotianClassificationListActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             adapter.notifyDataSetChanged();
-                            listView.setSelection(listView.getFirstVisiblePosition());
+                            listView.setSelection(listView.getScrollY());
                             listView.invalidateViews();
                             page = page + 1;
                             notLoading = true;
