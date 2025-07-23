@@ -1,6 +1,7 @@
 package com.example.novelreader.hjwzw;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -19,8 +20,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.novelreader.ChapterListAdapter;
+import com.example.novelreader.ErrorPage;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.hjwzwBookDetail;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.hjwzw;
 
 import java.io.IOException;
@@ -56,6 +60,13 @@ public class hjwzwBookInfoActivity extends AppCompatActivity {
             return insets;
         });
 
+        if (!NetworkUtil.isNetworkAvailable(this)) {
+            Intent intent = new Intent(this, NetworkError.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         imageView = findViewById(R.id.bookInfoImage);
         String url = getIntent().getStringExtra("URL");
         bookName = findViewById(R.id.bookName);
@@ -74,7 +85,9 @@ public class hjwzwBookInfoActivity extends AppCompatActivity {
             try {
                 bookInfo = hjwzw.getBookInfo(url);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Intent intent = new Intent(this, ErrorPage.class);
+                startActivity(intent);
+                finish();
             }
             runOnUiThread(new Runnable() {
                 @Override

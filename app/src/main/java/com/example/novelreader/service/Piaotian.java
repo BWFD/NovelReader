@@ -46,7 +46,7 @@ public class Piaotian {
             if (!element.attr("href").endsWith("/")) {
 
                 classificationList.add(new PiaotianClassification(
-                        "https://www.piaotia.com" + element.attr("href"), Translate.chs2cht(element.text()), "NULL"));
+                        "https://www.piaotia.com" + element.attr("href"), TranslateUtil.chs2cht(element.text()), "NULL"));
             }
         });
         return classificationList;
@@ -84,8 +84,8 @@ public class Piaotian {
                     //System.out.println(bookInfo.get(2).text());
                     monthRank.add(new PiaotianClassification(
                             "https://www.piaotia.com" + bookInfo.get(0).select("a").attr("href").replace("https://www.piaotia.com",""),
-                            Translate.chs2cht(bookInfo.get(0).text()),
-                            Translate.chs2cht(bookInfo.get(2).text())
+                            TranslateUtil.chs2cht(bookInfo.get(0).text()),
+                            TranslateUtil.chs2cht(bookInfo.get(2).text())
                     ));
 
                 }
@@ -123,8 +123,8 @@ public class Piaotian {
                 Elements elements = document.select("table tr td");
                 searchList.add(new PiaotianClassification(
                         response.request().url().toString(),
-                        Translate.chs2cht(elements.get(1).text()),
-                        Translate.chs2cht(elements.get(4).text().split("：")[1])
+                        TranslateUtil.chs2cht(elements.get(1).text()),
+                        TranslateUtil.chs2cht(elements.get(4).text().split("：")[1])
                 ));
 
                 return searchList;
@@ -145,8 +145,8 @@ public class Piaotian {
                     //System.out.println(bookInfo.get(2).text());
                     searchList.add(new PiaotianClassification(
                             bookInfo.get(0).select("a").attr("href"),
-                            Translate.chs2cht(bookInfo.get(0).text()),
-                            Translate.chs2cht(bookInfo.get(2).text())
+                            TranslateUtil.chs2cht(bookInfo.get(0).text()),
+                            TranslateUtil.chs2cht(bookInfo.get(2).text())
                     ));
 
                 }
@@ -189,8 +189,8 @@ public class Piaotian {
                 if (bookInfo.size() > 1) {
                     bookList.add(new PiaotianClassification(
                             bookInfo.get(0).select("a").attr("href").startsWith(header) ? bookInfo.get(0).select("a").attr("href") : header +  bookInfo.get(0).select("a").attr("href"),
-                            Translate.chs2cht(bookInfo.get(0).text()),
-                            Translate.chs2cht(bookInfo.get(2).text())
+                            TranslateUtil.chs2cht(bookInfo.get(0).text()),
+                            TranslateUtil.chs2cht(bookInfo.get(2).text())
                     ));
                 }
             });
@@ -220,10 +220,10 @@ public class Piaotian {
             document = Jsoup.parse(response.body().byteStream(), "GBK", url);
             Elements elements = document.select("table tr td");
 
-            String bookName = Translate.chs2cht(elements.get(1).text());
+            String bookName = TranslateUtil.chs2cht(elements.get(1).text());
             book.setName(bookName);
-            book.setAuthor(Translate.chs2cht(elements.get(4).text()));
-            book.setDesc(Translate.chs2cht(elements.get(19).text().split("内容简介：")[1]));
+            book.setAuthor(TranslateUtil.chs2cht(elements.get(4).text()));
+            book.setDesc(TranslateUtil.chs2cht(elements.get(19).text().split("内容简介：")[1]));
             book.setImageURL(elements.stream().filter(
                             element -> element.select("a").attr("href").endsWith(".jpg"))
                     .findAny().get().select("a").attr("href"));
@@ -248,7 +248,7 @@ public class Piaotian {
 
 
                 List<String> name = elements.stream()
-                        .map(element -> Translate.chs2cht(element.select("a").text()))
+                        .map(element -> TranslateUtil.chs2cht(element.select("a").text()))
                         .filter(text -> !text.equals(""))
                         .collect(Collectors.toList());
 
@@ -294,8 +294,8 @@ public class Piaotian {
                     book[1] = book[1] + list[i].replace("&nbsp;&nbsp;&nbsp;&nbsp;", "\t").replace("\n", "").replace("&#x2003;&#x2003;", " ").split("<!-")[0] + "\n\n";
                 }
             }
-            book[0] = Translate.chs2cht(book[0]);
-            book[1] = Translate.chs2cht(book[1]);
+            book[0] = TranslateUtil.chs2cht(book[0]);
+            book[1] = TranslateUtil.chs2cht(book[1]);
 
         }
         else {

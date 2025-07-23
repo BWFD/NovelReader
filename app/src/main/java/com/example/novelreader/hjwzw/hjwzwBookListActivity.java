@@ -1,5 +1,6 @@
 package com.example.novelreader.hjwzw;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AbsListView;
@@ -12,8 +13,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.novelreader.ErrorPage;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.hjwzwClassification;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.hjwzw;
 
 import java.io.IOException;
@@ -80,13 +84,22 @@ public class hjwzwBookListActivity extends AppCompatActivity {
         title.setText(titleStr);
         new Thread(() -> {
             try {
+
+                if (!NetworkUtil.isNetworkAvailable(this)) {
+                    Intent intent = new Intent(this, NetworkError.class);
+                    startActivity(intent);
+                    return;
+                }
+
                 List<hjwzwClassification> temp = hjwzw.getBookList(url,page);
                 if(temp != null) {
                     dataList.addAll(temp);
                     runOnUiThread(() -> updateUI());
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Intent intent = new Intent(this, ErrorPage.class);
+                startActivity(intent);
+                finish();
             }
         }).start();
     }

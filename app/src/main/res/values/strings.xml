@@ -11,4 +11,5 @@
     </string-array>
     <string name="title_activity_czbooks_classification_list3">CZBooksClassificationList3Activity
     </string>
+    <string name="title_activity_network_error_page">NetworkErrorPage</string>
 </resources>

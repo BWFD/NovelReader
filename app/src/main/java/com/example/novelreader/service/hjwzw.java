@@ -36,7 +36,9 @@ public class hjwzw {
         Elements elements = document.select("span.index2a a");
         List<hjwzwClassification> dataList = new ArrayList<>();
         for(Element e : elements) {
-            if(e.text().equals("首 頁") || e.text().equals("手機版") || e.text().equals("移動版") || e.text().equals("書架")) {
+            if(e.text().equals("首 頁") || e.text().equals("手機版") ||
+                    e.text().equals("移動版") || e.text().equals("書架") ||
+            e.text().equals("情趣用品")) {
                 continue;
             }
             dataList.add(new hjwzwClassification(e.text(), e.attr("href"), "NULL", "NULL"));

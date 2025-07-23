@@ -14,11 +14,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.novelreader.ErrorPage;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.Piaotain.PiaotianClassificationListActivity;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.CZBooksClassification;
 import com.example.novelreader.dao.PiaotianClassification;
 import com.example.novelreader.service.CZBooks;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.Piaotian;
 
 import java.io.IOException;
@@ -46,7 +49,9 @@ public class CZBooksClassificationFragment extends Fragment {
                 try {
                     classificationList = CZBooks.getClassification();
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    Intent intent = new Intent(getContext(), ErrorPage.class);
+                    startActivity(intent);
+                    return;
                 }
                 if(isAdded() && getContext() != null) {
                     requireActivity().runOnUiThread(() -> createButtons(classificationList));
@@ -95,6 +100,12 @@ public class CZBooksClassificationFragment extends Fragment {
             // 設置按鈕的點擊事件
             int finalActivityType = activityType;
             button.setOnClickListener(v -> {
+
+                if (!NetworkUtil.isNetworkAvailable(getContext())) {
+                    Intent intent = new Intent(getContext(), NetworkError.class);
+                    startActivity(intent);
+                    return;
+                }
                 Intent intent;
                 if(finalActivityType == 5) {
                     intent = new Intent(getActivity(), CZBooksClassificationList5Activity.class);

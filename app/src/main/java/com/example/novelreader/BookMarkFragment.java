@@ -189,6 +189,7 @@ public class BookMarkFragment extends Fragment {
                             startActivity(intent);
                             return true;
                         }
+                        //TODO 刪除預載 deleteDownload
                         else {
                             return true;
                         }

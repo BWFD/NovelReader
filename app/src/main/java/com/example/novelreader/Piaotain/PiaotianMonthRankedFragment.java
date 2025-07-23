@@ -1,6 +1,7 @@
 package com.example.novelreader.Piaotain;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,8 +15,11 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.novelreader.ErrorPage;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.PiaotianClassification;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.Piaotian;
 
 import java.io.IOException;
@@ -75,13 +79,19 @@ public class PiaotianMonthRankedFragment extends Fragment {
     public void getMonthRankedList() {
         new Thread(() -> {
             try {
+                if (!NetworkUtil.isNetworkAvailable(getContext())) {
+                    Intent intent = new Intent(getContext(), NetworkError.class);
+                    startActivity(intent);
+                    return;
+                }
                 List<PiaotianClassification> temp = Piaotian.getMonthRank(page);
                 if(temp != null) {
                     dataList.addAll(temp);
                     getActivity().runOnUiThread(() -> updateUI());
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Intent intent = new Intent(getContext(), ErrorPage.class);
+                startActivity(intent);
             }
         }).start();
     }

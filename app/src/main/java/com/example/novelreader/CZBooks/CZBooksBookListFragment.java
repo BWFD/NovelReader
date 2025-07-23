@@ -1,9 +1,11 @@
 package com.example.novelreader.CZBooks;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +13,11 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.CZBooksClassification;
 import com.example.novelreader.service.CZBooks;
+import com.example.novelreader.service.NetworkUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,6 +31,8 @@ public class CZBooksBookListFragment extends Fragment {
     private int page;
     CZBooksBookListAdapter adapter;
     TextView loading;
+
+    boolean alreadyDisconnect = false;
 
     public static CZBooksBookListFragment classificationNew(String classification) {
         CZBooksBookListFragment fragment = new CZBooksBookListFragment();
@@ -118,7 +124,12 @@ public class CZBooksBookListFragment extends Fragment {
                     getActivity().runOnUiThread(() -> updateUI());
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                if(!NetworkUtil.isNetworkAvailable(getActivity())) {
+                    if(!alreadyDisconnect) {
+                        Intent intent = new Intent(getActivity(), NetworkError.class);
+                        startActivity(intent);
+                    }
+                }
             }
         }).start();
     }

@@ -12,4 +12,8 @@
         android:id="@+id/editPosition"
         android:title="編輯此書籤位置" />
 
+    <item
+        android:id="@+id/deleteDownload"
+        android:title="刪除預載" />
+
 </menu>

@@ -30,6 +30,7 @@ import com.example.novelreader.Piaotain.PiaotianBookInfoActivity;
 import com.example.novelreader.hjwzw.hjwzwBookInfoActivity;
 import com.example.novelreader.hjwzw.hjwzwInfoActivity;
 import com.example.novelreader.service.CZBooks;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.Piaotian;
 import com.example.novelreader.service.hjwzw;
 
@@ -56,6 +57,7 @@ public class ReaderActivity extends AppCompatActivity {
 
     String textSize="15";
     String textColor="#AAAAAA";
+    boolean disconnect = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,16 @@ public class ReaderActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        disconnect = false;
+
+        if (!NetworkUtil.isNetworkAvailable(this)) {
+            Intent intent = new Intent(this, NetworkError.class);
+            startActivity(intent);
+            finish();
+            disconnect = true;
+            return;
+        }
+
         title = findViewById(R.id.bookTitle);
         textView = findViewById(R.id.chapterContext);
         prevButton = findViewById(R.id.prevButton);
@@ -117,6 +129,7 @@ public class ReaderActivity extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 }
+                // TODO 預載小說 根據不同的小說網call service下載
                 else {
                     return true;
                 }
@@ -238,7 +251,9 @@ public class ReaderActivity extends AppCompatActivity {
                     book = null;
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Intent intent = new Intent(this, ErrorPage.class);
+                startActivity(intent);
+                finish();
             }
 
             runOnUiThread(() -> {
@@ -323,6 +338,7 @@ public class ReaderActivity extends AppCompatActivity {
 
     @Override
     protected void onUserLeaveHint() {
+        if(disconnect) return;
         super.onUserLeaveHint();
 
         ContentValues values = new ContentValues();

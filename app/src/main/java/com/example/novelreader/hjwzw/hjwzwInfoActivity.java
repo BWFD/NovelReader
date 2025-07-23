@@ -1,5 +1,6 @@
 package com.example.novelreader.hjwzw;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -13,7 +14,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.novelreader.CZBooks.CZBooksFragmentAdapter;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
+import com.example.novelreader.service.NetworkUtil;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -28,6 +31,12 @@ public class hjwzwInfoActivity extends AppCompatActivity {
         ViewPager2 viewPager = findViewById(R.id.viewPager);
         hjwzwFragmentAdapter fragmentAdapter = new hjwzwFragmentAdapter(this);
         viewPager.setAdapter(fragmentAdapter);
+
+        if (!NetworkUtil.isNetworkAvailable(this)) {
+            Intent intent = new Intent(this, NetworkError.class);
+            startActivity(intent);
+            finish();
+        }
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
