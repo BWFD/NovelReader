@@ -38,6 +38,8 @@ public class BookMarkFragment extends Fragment {
     View view;
     private LinearLayout bookmarkList;
     Uri uri = Uri.parse("content://com.example.novelreader.bookmark/data");
+
+    Uri download = Uri.parse("content://com.example.novelreader.download/data");
     Cursor cursor;
 
     @Override
@@ -65,7 +67,6 @@ public class BookMarkFragment extends Fragment {
                 String text = "";
                 String url = "";
                 String bookName = "";
-                String chapterName;
                 String TOTALHTML = "";
                 String webSite = "";
                 int scrolled = 0;
@@ -76,6 +77,7 @@ public class BookMarkFragment extends Fragment {
                     text = cursor.getString(index);
                     bookName = text;
                 }
+
                 index = cursor.getColumnIndex("webSite");
                 if (index != -1) {
                     webSite = cursor.getString(index);
@@ -94,13 +96,12 @@ public class BookMarkFragment extends Fragment {
                         text = text + "-" + webSite;
                     }
                 }
+
                 index = cursor.getColumnIndex("chapterName");
                 if (index != -1) {
-                    chapterName = cursor.getString(index);
                     text = text + "\n" + cursor.getString(index);
-                } else {
-                    chapterName = "NULL";
                 }
+
                 button.setText(text);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -111,6 +112,7 @@ public class BookMarkFragment extends Fragment {
                 button.setPadding(10, 0, 0, 0);
                 button.setTextColor(Color.WHITE);
                 button.setBackgroundColor(Color.TRANSPARENT);
+
                 index = cursor.getColumnIndex("chapterUrl");
                 if (index != -1) {
                     url = cursor.getString(index);
@@ -118,18 +120,22 @@ public class BookMarkFragment extends Fragment {
                 String finalUrl = url;
                 String finalBookName = bookName;
                 String finalWebSite = webSite;
+
                 index = cursor.getColumnIndex("TOTALHTML");
                 if (index != -1) {
                     TOTALHTML = cursor.getString(index);
                 }
+
                 index = cursor.getColumnIndex("Scrolled");
                 if (index != -1) {
                     scrolled = cursor.getInt(index);
                 }
+
                 index = cursor.getColumnIndex("_id");
                 if (index != -1) {
                     id = cursor.getInt(index);
                 }
+
                 String finalTOTALHTML = TOTALHTML;
                 int finalScrolled = scrolled;
                 long finialId = id;
@@ -189,7 +195,13 @@ public class BookMarkFragment extends Fragment {
                             startActivity(intent);
                             return true;
                         }
-                        //TODO 刪除預載 deleteDownload
+                        else
+                        if(popupMenuId == R.id.deleteDownload) {
+                            getContext().getContentResolver().delete(download,"TOTALHTML = ?", new String[]{finalTOTALHTML});
+                            getContext().getContentResolver().notifyChange(download, null);
+                            Toast.makeText(getContext(), "已刪除預載", Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
                         else {
                             return true;
                         }

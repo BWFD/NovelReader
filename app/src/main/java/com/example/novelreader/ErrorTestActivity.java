@@ -22,6 +22,7 @@ public class ErrorTestActivity extends AppCompatActivity {
     private Button piaotian;
     private Button czbooks;
     private Button hjwzw;
+    private Button deleteAllDownload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class ErrorTestActivity extends AppCompatActivity {
         piaotian = findViewById(R.id.piaotian);
         czbooks = findViewById(R.id.czbooks);
         hjwzw = findViewById(R.id.hjwzw);
+        deleteAllDownload = findViewById(R.id.deleteAllDownload);
         piaotian.setOnClickListener(view -> {
             String url = "https://www.piaotia.com/";
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -44,7 +46,7 @@ public class ErrorTestActivity extends AppCompatActivity {
             try {
                 Intent chooser = Intent.createChooser(intent, "選擇瀏覽器開啟網站");
                 startActivity(chooser);
-            }catch (ActivityNotFoundException e) {
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(activity, "網站開啟失敗", Toast.LENGTH_SHORT).show();
             }
 
@@ -57,22 +59,28 @@ public class ErrorTestActivity extends AppCompatActivity {
             try {
                 Intent chooser = Intent.createChooser(intent, "選擇瀏覽器開啟網站");
                 startActivity(chooser);
-            }catch (ActivityNotFoundException e) {
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(activity, "網站開啟失敗", Toast.LENGTH_SHORT).show();
             }
 
         });
 
-        hjwzw.setOnClickListener(view ->{
+        hjwzw.setOnClickListener(view -> {
             String url = "https://tw.hjwzw.com/";
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             try {
                 Intent chooser = Intent.createChooser(intent, "選擇瀏覽器開啟網站");
                 startActivity(chooser);
-            }catch (ActivityNotFoundException e) {
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(activity, "網站開啟失敗", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        deleteAllDownload.setOnClickListener(view -> {
+            Uri uri = Uri.parse("content://com.example.novelreader.download/data");
+            getContentResolver().delete(uri, null, null);
+            Toast.makeText(activity, "已刪除所有下載", Toast.LENGTH_SHORT).show();
         });
 
     }
