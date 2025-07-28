@@ -1,6 +1,7 @@
 package com.example.novelreader.Piaotain;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -18,8 +19,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.novelreader.ChapterListAdapter;
+import com.example.novelreader.ErrorPage;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.PiaotianBookDetail;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.Piaotian;
 
 import java.io.IOException;
@@ -57,6 +61,13 @@ public class PiaotianBookInfoActivity extends AppCompatActivity {
             return insets;
         });
 
+        if (!NetworkUtil.isNetworkAvailable(this)) {
+            Intent intent = new Intent(this, NetworkError.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         imageView = findViewById(R.id.bookInfoImage);
         String url = getIntent().getStringExtra("URL");
         bookName = findViewById(R.id.bookName);
@@ -76,7 +87,9 @@ public class PiaotianBookInfoActivity extends AppCompatActivity {
             try {
                 bookInfo = Piaotian.getBookDetail(url);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Intent intent = new Intent(this, ErrorPage.class);
+                startActivity(intent);
+                finish();
             }
             runOnUiThread(new Runnable() {
                 @Override

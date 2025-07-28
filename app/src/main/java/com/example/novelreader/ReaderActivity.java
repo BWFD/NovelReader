@@ -3,7 +3,6 @@ package com.example.novelreader;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -11,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
@@ -28,8 +26,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.novelreader.CZBooks.CZBooksBookInfoActivity;
 import com.example.novelreader.Piaotain.PiaotianBookInfoActivity;
 import com.example.novelreader.hjwzw.hjwzwBookInfoActivity;
-import com.example.novelreader.hjwzw.hjwzwInfoActivity;
 import com.example.novelreader.service.CZBooks;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.Piaotian;
 import com.example.novelreader.service.hjwzw;
 
@@ -48,6 +46,7 @@ public class ReaderActivity extends AppCompatActivity {
     String url;
     Uri uri = Uri.parse("content://com.example.novelreader.bookmark/data");
     Uri setting = Uri.parse("content://com.example.novelreader.setting/data");
+    Uri download = Uri.parse("content://com.example.novelreader.download/data");
     private boolean isFirst = true;
     int index;
     private Button settingButton;
@@ -56,6 +55,7 @@ public class ReaderActivity extends AppCompatActivity {
 
     String textSize="15";
     String textColor="#AAAAAA";
+    boolean disconnect = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +67,16 @@ public class ReaderActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        disconnect = false;
+
+        if (!NetworkUtil.isNetworkAvailable(this)) {
+            Intent intent = new Intent(this, NetworkError.class);
+            startActivity(intent);
+            finish();
+            disconnect = true;
+            return;
+        }
+
         title = findViewById(R.id.bookTitle);
         textView = findViewById(R.id.chapterContext);
         prevButton = findViewById(R.id.prevButton);
@@ -90,25 +100,25 @@ public class ReaderActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 if(id == R.id.openBook) {
                     Intent intent;
-                    if(webSite.equals("Piaotian")) {
-                        intent = new Intent(activity, PiaotianBookInfoActivity.class);
-                        intent.putExtra("URL","CHAPTER:" + url);
-                        startActivity(intent);
-                        finish();
-                    }
-                    else
-                    if(webSite.equals("CZBooks")) {
-                        intent = new Intent(activity, CZBooksBookInfoActivity.class);
-                        intent.putExtra("URL","CHAPTER:" + url);
-                        startActivity(intent);
-                        finish();
-                    }
-                    else
-                    if(webSite.equals("hjwzw")) {
-                        intent = new Intent(activity, hjwzwBookInfoActivity.class);
-                        intent.putExtra("URL","CHAPTER:" + url);
-                        startActivity(intent);
-                        finish();
+                    switch (webSite) {
+                        case "Piaotian":
+                            intent = new Intent(activity, PiaotianBookInfoActivity.class);
+                            intent.putExtra("URL", "CHAPTER:" + url);
+                            startActivity(intent);
+                            finish();
+                            break;
+                        case "CZBooks":
+                            intent = new Intent(activity, CZBooksBookInfoActivity.class);
+                            intent.putExtra("URL", "CHAPTER:" + url);
+                            startActivity(intent);
+                            finish();
+                            break;
+                        case "hjwzw":
+                            intent = new Intent(activity, hjwzwBookInfoActivity.class);
+                            intent.putExtra("URL", "CHAPTER:" + url);
+                            startActivity(intent);
+                            finish();
+                            break;
                     }
                 }
                 else
@@ -116,6 +126,44 @@ public class ReaderActivity extends AppCompatActivity {
                     Intent intent = new Intent(activity, WordSettingActivity.class);
                     startActivity(intent);
                     return true;
+                }
+                // TODO 預載小說 根據不同的小說網call service下載
+                if(id == R.id.download) {
+                    switch (webSite) {
+                        case "Piaotian":
+                            new Thread(() -> {
+                                try {
+                                    Piaotian.download(this,TOTALHTML);
+                                } catch (Exception e) {
+                                    Intent intent = new Intent(this, ErrorPage.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }).start();
+                            break;
+                        case "CZBooks":
+                            new Thread(() -> {
+                                try {
+                                    CZBooks.download(this,TOTALHTML);
+                                } catch (Exception e) {
+                                    Intent intent = new Intent(this, ErrorPage.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }).start();
+                            break;
+                        case "hjwzw":
+                            new Thread(() -> {
+                                try {
+                                    hjwzw.download(this,TOTALHTML);
+                                } catch (Exception e) {
+                                    Intent intent = new Intent(this, ErrorPage.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }).start();
+                            break;
+                    }
                 }
                 else {
                     return true;
@@ -217,10 +265,48 @@ public class ReaderActivity extends AppCompatActivity {
 
         }
         book = new String[2];
-        updateBook(url);
+        String [] args = new String[]{url};
+        Cursor cursor = getContentResolver().query(download,null,"chapterUrl = ?",args,null);
+        if(cursor.getCount() > 0 ) {
+            updateBookFromDatabase(cursor);
+        }
+        else {
+        updateBookFormService(url);
+        }
     }
 
-    public void updateBook(String url) {
+    public void updateBookFromDatabase(Cursor cursor) {
+        new Thread(() -> {
+            runOnUiThread(() -> {
+                if(cursor != null && cursor.moveToNext()) {
+                    int index = cursor.getColumnIndex("chapterName");
+                    if(index != -1) {
+                        String name = cursor.getString(index);
+                        book[0] = name;
+                        title.setText(name);
+                    }
+
+                    index = cursor.getColumnIndex("novel");
+                    if(index != -1) {
+                        textView.setText(cursor.getString(index));
+                    }
+
+                    index = cursor.getColumnIndex("scrolled");
+                    if(index != -1) {
+                        int finalIndex = index;
+                        scrollView.post(() -> {
+                            scrollView.smoothScrollTo(0, finalIndex);  // 平滑滾動到指定位置
+                        });
+                    }
+                }
+                cursor.close();
+                loading.setText("");
+                loading.setVisibility(View.INVISIBLE);
+            });
+        }).start();
+    }
+
+    public void updateBookFormService(String url) {
         new Thread(() -> {
             try {
                 if(webSite.equals("Piaotian")) {
@@ -238,7 +324,9 @@ public class ReaderActivity extends AppCompatActivity {
                     book = null;
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Intent intent = new Intent(this, ErrorPage.class);
+                startActivity(intent);
+                finish();
             }
 
             runOnUiThread(() -> {
@@ -252,11 +340,8 @@ public class ReaderActivity extends AppCompatActivity {
                     textView.setText(book[1]);
                     loading.setText("");
                     loading.setVisibility(View.INVISIBLE);
-                    scrollView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scrollView.smoothScrollTo(0, getIntent().getIntExtra("scrolled",0));  // 平滑滾動到指定位置
-                        }
+                    scrollView.post(() -> {
+                        scrollView.smoothScrollTo(0, getIntent().getIntExtra("scrolled",0));  // 平滑滾動到指定位置
                     });
 
                 }
@@ -323,6 +408,7 @@ public class ReaderActivity extends AppCompatActivity {
 
     @Override
     protected void onUserLeaveHint() {
+        if(disconnect) return;
         super.onUserLeaveHint();
 
         ContentValues values = new ContentValues();

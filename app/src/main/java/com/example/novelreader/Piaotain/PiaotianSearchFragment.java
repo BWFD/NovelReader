@@ -27,8 +27,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.novelreader.ErrorPage;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.PiaotianClassification;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.Piaotian;
 
 import java.io.IOException;
@@ -157,10 +160,17 @@ public class PiaotianSearchFragment extends Fragment {
 
             if(!keyword.equals("")) {
                 try {
+                    if (!NetworkUtil.isNetworkAvailable(getContext())) {
+                        Intent intent = new Intent(getContext(), NetworkError.class);
+                        startActivity(intent);
+                        return;
+                    }
                     dataList = Piaotian.getSearch(keyword, classification, page);
                     //dataList.addAll(Piaotian.getMonthRank(page));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    Intent intent = new Intent(getContext(), ErrorPage.class);
+                    startActivity(intent);
+                    return;
                 }
             }
             if(isAdded() && getContext() != null) {

@@ -1,6 +1,7 @@
 package com.example.novelreader.Piaotain;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.AbsListView;
 import android.widget.ListView;
@@ -12,6 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.novelreader.ErrorPage;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.PiaotianClassification;
 import com.example.novelreader.service.Piaotian;
@@ -92,7 +94,9 @@ public class PiaotianClassificationListActivity extends AppCompatActivity {
                     });
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Intent intent = new Intent(this, ErrorPage.class);
+                startActivity(intent);
+                finish();
             }
         }).start();
     }

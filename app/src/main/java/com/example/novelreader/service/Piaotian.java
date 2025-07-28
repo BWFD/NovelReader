@@ -1,7 +1,17 @@
 package com.example.novelreader.service;
 
 
+import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
+import android.text.TextUtils;
+import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.example.novelreader.dao.PiaotianBookDetail;
 import com.example.novelreader.dao.PiaotianClassification;
@@ -23,6 +33,8 @@ import okhttp3.Response;
 public class Piaotian {
 
     private static OkHttpClient client = new OkHttpClient();
+
+    private static Uri download = Uri.parse("content://com.example.novelreader.download/data");
 
 
     public static List<PiaotianClassification> getClassification(Context context) throws IOException {
@@ -46,7 +58,7 @@ public class Piaotian {
             if (!element.attr("href").endsWith("/")) {
 
                 classificationList.add(new PiaotianClassification(
-                        "https://www.piaotia.com" + element.attr("href"), Translate.chs2cht(element.text()), "NULL"));
+                        "https://www.piaotia.com" + element.attr("href"), TranslateUtil.chs2cht(element.text()), "NULL"));
             }
         });
         return classificationList;
@@ -84,8 +96,8 @@ public class Piaotian {
                     //System.out.println(bookInfo.get(2).text());
                     monthRank.add(new PiaotianClassification(
                             "https://www.piaotia.com" + bookInfo.get(0).select("a").attr("href").replace("https://www.piaotia.com",""),
-                            Translate.chs2cht(bookInfo.get(0).text()),
-                            Translate.chs2cht(bookInfo.get(2).text())
+                            TranslateUtil.chs2cht(bookInfo.get(0).text()),
+                            TranslateUtil.chs2cht(bookInfo.get(2).text())
                     ));
 
                 }
@@ -123,8 +135,8 @@ public class Piaotian {
                 Elements elements = document.select("table tr td");
                 searchList.add(new PiaotianClassification(
                         response.request().url().toString(),
-                        Translate.chs2cht(elements.get(1).text()),
-                        Translate.chs2cht(elements.get(4).text().split("：")[1])
+                        TranslateUtil.chs2cht(elements.get(1).text()),
+                        TranslateUtil.chs2cht(elements.get(4).text().split("：")[1])
                 ));
 
                 return searchList;
@@ -145,8 +157,8 @@ public class Piaotian {
                     //System.out.println(bookInfo.get(2).text());
                     searchList.add(new PiaotianClassification(
                             bookInfo.get(0).select("a").attr("href"),
-                            Translate.chs2cht(bookInfo.get(0).text()),
-                            Translate.chs2cht(bookInfo.get(2).text())
+                            TranslateUtil.chs2cht(bookInfo.get(0).text()),
+                            TranslateUtil.chs2cht(bookInfo.get(2).text())
                     ));
 
                 }
@@ -189,8 +201,8 @@ public class Piaotian {
                 if (bookInfo.size() > 1) {
                     bookList.add(new PiaotianClassification(
                             bookInfo.get(0).select("a").attr("href").startsWith(header) ? bookInfo.get(0).select("a").attr("href") : header +  bookInfo.get(0).select("a").attr("href"),
-                            Translate.chs2cht(bookInfo.get(0).text()),
-                            Translate.chs2cht(bookInfo.get(2).text())
+                            TranslateUtil.chs2cht(bookInfo.get(0).text()),
+                            TranslateUtil.chs2cht(bookInfo.get(2).text())
                     ));
                 }
             });
@@ -220,10 +232,10 @@ public class Piaotian {
             document = Jsoup.parse(response.body().byteStream(), "GBK", url);
             Elements elements = document.select("table tr td");
 
-            String bookName = Translate.chs2cht(elements.get(1).text());
+            String bookName = TranslateUtil.chs2cht(elements.get(1).text());
             book.setName(bookName);
-            book.setAuthor(Translate.chs2cht(elements.get(4).text()));
-            book.setDesc(Translate.chs2cht(elements.get(19).text().split("内容简介：")[1]));
+            book.setAuthor(TranslateUtil.chs2cht(elements.get(4).text()));
+            book.setDesc(TranslateUtil.chs2cht(elements.get(19).text().split("内容简介：")[1]));
             book.setImageURL(elements.stream().filter(
                             element -> element.select("a").attr("href").endsWith(".jpg"))
                     .findAny().get().select("a").attr("href"));
@@ -248,7 +260,7 @@ public class Piaotian {
 
 
                 List<String> name = elements.stream()
-                        .map(element -> Translate.chs2cht(element.select("a").text()))
+                        .map(element -> TranslateUtil.chs2cht(element.select("a").text()))
                         .filter(text -> !text.equals(""))
                         .collect(Collectors.toList());
 
@@ -294,8 +306,8 @@ public class Piaotian {
                     book[1] = book[1] + list[i].replace("&nbsp;&nbsp;&nbsp;&nbsp;", "\t").replace("\n", "").replace("&#x2003;&#x2003;", " ").split("<!-")[0] + "\n\n";
                 }
             }
-            book[0] = Translate.chs2cht(book[0]);
-            book[1] = Translate.chs2cht(book[1]);
+            book[0] = TranslateUtil.chs2cht(book[0]);
+            book[1] = TranslateUtil.chs2cht(book[1]);
 
         }
         else {
@@ -322,5 +334,50 @@ public class Piaotian {
 
         System.out.println(document.select("a").get(1).attr("href"));
         return document.select("a").get(1).attr("href");
+    }
+
+    public static void download(Activity activity, ArrayList<String> TOTALHTML) throws Exception {
+        NotificationManager notificationManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        int max = TOTALHTML.size();
+        int NOTIFICATION_ID = 1001;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("download", "download", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(activity, "download")
+                .setContentTitle("小說預載中")
+                .setContentText("初始化中...")
+                .setSmallIcon(android.R.drawable.stat_sys_download)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setOnlyAlertOnce(true)
+                .setProgress(max, 1, false);
+        try {
+            for(int i=0;i<max;i++) {
+                String[] book = null;
+                while(book == null){
+                    book = getChapter(TOTALHTML.get(i));
+                }
+                ContentValues values = new ContentValues();
+                values.put("chapterName", book[0]);
+                values.put("novel", book[1]);
+                values.put("scrolled", 0);
+                values.put("website", "Piaotian");
+                values.put("TOTALHTML", TextUtils.join("|", TOTALHTML));
+                values.put("chapterUrl", TOTALHTML.get(i));
+                activity.getContentResolver().insert(download, values);
+                int progress = i + 1;
+                builder.setContentText("進度：" + progress + "/" + max);
+                Log.d("Progress", "Progress: " + progress + "/" + max);
+                builder.setProgress(max, progress, false);
+                notificationManager.notify(NOTIFICATION_ID, builder.build());
+            }
+            builder.setContentText("預載完成")
+                    .setProgress(0, 0, false)
+                    .setSmallIcon(android.R.drawable.stat_sys_download_done);
+                notificationManager.notify(NOTIFICATION_ID, builder.build());
+            } catch (Exception e) {
+                throw new Exception("預載失敗");
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.novelreader.hjwzw;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,8 +17,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.novelreader.ErrorPage;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.hjwzwClassification;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.hjwzw;
 
 import java.io.IOException;
@@ -78,7 +82,11 @@ public class hjwzwSearchFragment extends Fragment {
 
         Button submitButton = view.findViewById(R.id.searchSubmitButton);
         submitButton.setOnClickListener(view -> {
-
+            if (!NetworkUtil.isNetworkAvailable(getContext())) {
+                Intent intent = new Intent(getContext(), NetworkError.class);
+                startActivity(intent);
+                return;
+            }
             InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
@@ -129,7 +137,9 @@ public class hjwzwSearchFragment extends Fragment {
                     });
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Intent intent = new Intent(getContext(), ErrorPage.class);
+                startActivity(intent);
+                return;
             }
         }).start();
     }

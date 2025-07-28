@@ -17,8 +17,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.novelreader.ErrorPage;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.PiaotianClassification;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.Piaotian;
 
 import java.io.IOException;
@@ -45,7 +48,9 @@ public class PiaotianClassificationFragment extends Fragment {
                 try {
                     classificationList = Piaotian.getClassification(context);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    Intent intent = new Intent(getContext(), ErrorPage.class);
+                    startActivity(intent);
+                    return;
                 }
                 if(isAdded() && getContext() != null) {
                     requireActivity().runOnUiThread(new Runnable() {
@@ -83,6 +88,11 @@ public class PiaotianClassificationFragment extends Fragment {
             button.setLayoutParams(params);
             // 設置按鈕的點擊事件
             button.setOnClickListener(v -> {
+                if (!NetworkUtil.isNetworkAvailable(getContext())) {
+                    Intent intent = new Intent(getContext(), NetworkError.class);
+                    startActivity(intent);
+                    return;
+                }
                 Intent intent = new Intent(getActivity(), PiaotianClassificationListActivity.class);
                 intent.putExtra("URL",classification.getHtml());
                 intent.putExtra("title","飄天文學網 - " + classification.getName());

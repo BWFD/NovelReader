@@ -1,5 +1,6 @@
 package com.example.novelreader.CZBooks;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -12,8 +13,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.Piaotain.PiaotianFragmentAdapter;
 import com.example.novelreader.R;
+import com.example.novelreader.service.NetworkUtil;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -28,6 +31,12 @@ public class CZBooksInfoActivity extends AppCompatActivity {
         ViewPager2 viewPager = findViewById(R.id.viewPager);
         CZBooksFragmentAdapter fragmentAdapter = new CZBooksFragmentAdapter(this);
         viewPager.setAdapter(fragmentAdapter);
+
+        if (!NetworkUtil.isNetworkAvailable(this)) {
+            Intent intent = new Intent(this, NetworkError.class);
+            startActivity(intent);
+            finish();
+        }
 
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);

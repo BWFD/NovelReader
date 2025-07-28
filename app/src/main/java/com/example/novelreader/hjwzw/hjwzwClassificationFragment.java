@@ -16,9 +16,12 @@ import android.widget.TextView;
 
 import com.example.novelreader.CZBooks.CZBooksClassificationList3Activity;
 import com.example.novelreader.CZBooks.CZBooksClassificationList5Activity;
+import com.example.novelreader.ErrorPage;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.CZBooksClassification;
 import com.example.novelreader.dao.hjwzwClassification;
+import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.hjwzw;
 
 import java.io.IOException;
@@ -33,6 +36,12 @@ public class hjwzwClassificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_hjwzw_classification, container, false);
+
+        if (!NetworkUtil.isNetworkAvailable(getContext())) {
+            Intent intent = new Intent(getContext(), NetworkError.class);
+            startActivity(intent);
+        }
+
         getClassification();
         return view;
     }
@@ -45,7 +54,9 @@ public class hjwzwClassificationFragment extends Fragment {
                 try {
                     classificationList = hjwzw.getClassification();
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    Intent intent = new Intent(getContext(), ErrorPage.class);
+                    startActivity(intent);
+                    return;
                 }
                 if(isAdded() && getContext() != null) {
                     requireActivity().runOnUiThread(() -> createButtons(classificationList));
@@ -78,6 +89,12 @@ public class hjwzwClassificationFragment extends Fragment {
             button.setLayoutParams(params);
             // 設置按鈕的點擊事件
             button.setOnClickListener(v -> {
+
+                if (!NetworkUtil.isNetworkAvailable(getContext())) {
+                    Intent intent = new Intent(getContext(), NetworkError.class);
+                    startActivity(intent);
+                    return;
+                }
                 Intent intent = new Intent(getActivity(), hjwzwBookListActivity.class);
 
                 intent.putExtra("URL",classification.getUrl());

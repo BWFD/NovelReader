@@ -21,9 +21,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.novelreader.ChapterListAdapter;
+import com.example.novelreader.ErrorPage;
+import com.example.novelreader.NetworkError;
 import com.example.novelreader.R;
 import com.example.novelreader.dao.CZBooksBookDetail;
 import com.example.novelreader.service.CZBooks;
+import com.example.novelreader.service.NetworkUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +62,13 @@ public class CZBooksBookInfoActivity extends AppCompatActivity {
             return insets;
         });
 
+        if (!NetworkUtil.isNetworkAvailable(this)) {
+            Intent intent = new Intent(this, NetworkError.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         imageView = findViewById(R.id.bookInfoImage);
         String url = getIntent().getStringExtra("URL");
         bookName = findViewById(R.id.bookName);
@@ -78,7 +88,9 @@ public class CZBooksBookInfoActivity extends AppCompatActivity {
             try {
                 bookInfo = CZBooks.getBookDetail(url);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Intent intent = new Intent(this, ErrorPage.class);
+                startActivity(intent);
+                finish();
             }
             runOnUiThread(() -> {
                 imageView.setImageDrawable(ContextCompat.getDrawable(activity,R.drawable.ic_launcher_round));
