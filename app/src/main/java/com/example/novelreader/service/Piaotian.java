@@ -362,6 +362,7 @@ public class Piaotian {
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setOnlyAlertOnce(true)
                 .setProgress(max, 1, false);
+        builder.setOngoing(true);
         try {
             for(int i=0;i<max;i++) {
 
@@ -395,6 +396,7 @@ public class Piaotian {
                     .setSmallIcon(android.R.drawable.stat_sys_download_done);
                 notificationManager.notify(NOTIFICATION_ID, builder.build());
             } catch (Exception e) {
+                builder.setOngoing(false);
                 throw new Exception("預載失敗");
         }
     }
