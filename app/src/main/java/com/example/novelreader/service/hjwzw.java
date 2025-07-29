@@ -230,6 +230,7 @@ public class hjwzw {
                 String[] book = null;
                 while(book == null){
                     book = getChapter(TOTALHTML.get(i));
+                    //不一定這樣處理
                     Thread.sleep(retrySec * 1000L);
                 }
                 retrySec = 0;

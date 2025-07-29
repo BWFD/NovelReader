@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -338,6 +339,10 @@ public class ReaderActivity extends AppCompatActivity {
             }
 
             runOnUiThread(() -> {
+                if(book == null) {
+                    Toast.makeText(activity,"網路繁忙，請稍後再試",Toast.LENGTH_LONG).show();
+                    return;
+                }
                 title.setText(book[0]);
                 if(book[1] != null && book[1].isEmpty()) {
                     textView.setText("來源網站排版有問題，建議到別的網站觀看!!!");
