@@ -40,6 +40,9 @@ public class WordSettingActivity extends AppCompatActivity {
     private Button resetButton;
     private Button confirm_button;
 
+    private Button textIncrease;
+    private Button textDecrease;
+
     Uri uri = Uri.parse("content://com.example.novelreader.setting/data");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,9 @@ public class WordSettingActivity extends AppCompatActivity {
 
         resetButton = findViewById(R.id.ResetSetting);
         confirm_button = findViewById(R.id.confirm_button);
+
+        textIncrease = findViewById(R.id.SizeIncrease);
+        textDecrease = findViewById(R.id.SizeDecrease);
 
         sizeSelect.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -144,6 +150,14 @@ public class WordSettingActivity extends AppCompatActivity {
             getContentResolver().update(uri,values,"only = ?",selectionArgs);
 
             finish();
+        });
+
+        textIncrease.setOnClickListener(view -> {
+            sizeSelect.setProgress(sizeSelect.getProgress() + 1);
+        });
+
+        textDecrease.setOnClickListener(view -> {
+            sizeSelect.setProgress(sizeSelect.getProgress() - 1);
         });
     }
 

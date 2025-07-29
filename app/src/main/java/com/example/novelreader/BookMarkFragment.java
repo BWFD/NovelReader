@@ -82,15 +82,15 @@ public class BookMarkFragment extends Fragment {
                 if (index != -1) {
                     webSite = cursor.getString(index);
                     if(Objects.equals(webSite, "Piaotian")) {
-                        text = text + "-" + "飄天文學網";
+                        text = text + " － " + "飄天文學網";
                     }
                     else
                     if(Objects.equals(webSite, "CZBooks")) {
-                        text = text + "-" + "小說狂人";
+                        text = text + " － " + "小說狂人";
                     }
                     else
                     if(Objects.equals(webSite, "hjwzw")) {
-                        text = text + "-" + "黃金屋中文網";
+                        text = text + " － " + "黃金屋中文網";
                     }
                     else  {
                         text = text + "-" + webSite;
