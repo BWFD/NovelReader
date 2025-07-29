@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 
+import com.example.novelreader.service.StrZipUtil;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +55,14 @@ public class ChapterListAdapter extends ArrayAdapter<String> {
         button.setPadding(10,0,0,0);
         button.setOnClickListener(view -> {
             Intent intent = new Intent(context, ReaderActivity.class);
-            intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(html));
+            //intent.putStringArrayListExtra("TOTALHTML",new ArrayList<>(html));
+            String TOTALHTML = null;
+            try {
+                TOTALHTML = StrZipUtil.compress(TextUtils.join("|", html));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            intent.putExtra("TOTALHTML",TOTALHTML);
             intent.putExtra("currentHtml", html.get(position));
             intent.putExtra("isInBookMark","false");
             intent.putExtra("bookName", bookName);
@@ -62,7 +73,6 @@ public class ChapterListAdapter extends ArrayAdapter<String> {
                 while (cursor.moveToNext()) {
                     int index = cursor.getColumnIndex("TOTALHTML");
                     if(index != -1) {
-                        String TOTALHTML = TextUtils.join("|", new ArrayList<>(html));
                         if(cursor.getString(index).equals(TOTALHTML)) {
                             intent.putExtra("isInBookMark", "true");
                             index = cursor.getColumnIndex("_id");

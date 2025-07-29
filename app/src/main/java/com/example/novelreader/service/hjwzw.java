@@ -5,9 +5,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,6 +34,8 @@ import okhttp3.Response;
 public class hjwzw {
     private static OkHttpClient client = new OkHttpClient();
     private static Uri download = Uri.parse("content://com.example.novelreader.download/data");
+
+    private static int retrySec = 0;
 
     public static List<hjwzwClassification> getClassification() throws IOException {
         String url = "https://tw.hjwzw.com/";
@@ -174,6 +177,11 @@ public class hjwzw {
             document = Jsoup.parse(response.body().byteStream(), "UTF-8", url);
         }else {
             System.out.println("Request failed with code: " + response.code());
+            System.out.println(response.header("Retry-After"));
+            if(response.header("Retry-After") != null || !Objects.equals(response.header("Retry-After"), "0")) {
+                retrySec = Integer.parseInt(response.header("Retry-After"));
+            }
+            return null;
         }
         Elements elements = document.select("h1");
         book[0] = elements.text();
@@ -193,8 +201,10 @@ public class hjwzw {
         return book;
     }
 
-    public static void download(Activity activity, ArrayList<String> TOTALHTML) throws Exception {
+    public static void download(Activity activity, String encode) throws Exception {
         NotificationManager notificationManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        String decode = StrZipUtil.uncompress(encode);
+        List<String> TOTALHTML = new ArrayList<>(List.of(decode.split("\\|")));
         int max = TOTALHTML.size();
         int NOTIFICATION_ID = 1001;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -211,16 +221,24 @@ public class hjwzw {
                 .setProgress(max, 1, false);
         try {
             for(int i=0;i<max;i++) {
+
+                Cursor cursor = activity.getContentResolver().query(download,null,"chapterUrl = ?",new String[]{TOTALHTML.get(i)},null);
+                if(cursor.getCount() > 0) {
+                    continue;
+                }
+
                 String[] book = null;
                 while(book == null){
                     book = getChapter(TOTALHTML.get(i));
+                    Thread.sleep(retrySec * 1000L);
                 }
+                retrySec = 0;
                 ContentValues values = new ContentValues();
                 values.put("chapterName", book[0]);
                 values.put("novel", book[1]);
                 values.put("scrolled", 0);
-                values.put("website", "Piaotian");
-                values.put("TOTALHTML", TextUtils.join("|", TOTALHTML));
+                values.put("website", "hjwzw");
+                values.put("TOTALHTML", encode);
                 values.put("chapterUrl", TOTALHTML.get(i));
                 activity.getContentResolver().insert(download, values);
                 int progress = i + 1;

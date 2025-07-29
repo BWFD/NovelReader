@@ -5,9 +5,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -160,11 +160,12 @@ public class CZBooks {
             Arrays.stream(elements.get(0).html().split("<br>")).forEach(str ->{
                 if(str.equals(" \n")) return;
                 book[1] = book[1] + str.replace("  ","").replace("　　","") + "\n";
-                System.out.println("|" + str + "G" + str.length());
             });
         }
         else {
             System.out.println("Request failed with code: " + response.code());
+            System.out.println(response.header("Retry-After"));
+            return null;
         }
 
         return book;
@@ -186,8 +187,10 @@ public class CZBooks {
         return "https:" + document.select("div.position a").get(2).attr("href");
     }
 
-    public static void download(Activity activity, ArrayList<String> TOTALHTML) throws Exception {
+    public static void download(Activity activity, String encode) throws Exception {
         NotificationManager notificationManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        String decode = StrZipUtil.uncompress(encode);
+        List<String> TOTALHTML = new ArrayList<>(List.of(decode.split("\\|")));
         int max = TOTALHTML.size();
         int NOTIFICATION_ID = 1001;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -204,16 +207,23 @@ public class CZBooks {
                 .setProgress(max, 1, false);
         try {
             for(int i=0;i<max;i++) {
+
+                Cursor cursor = activity.getContentResolver().query(download,null,"chapterUrl = ?",new String[]{TOTALHTML.get(i)},null);
+                if(cursor.getCount() > 0) {
+                    continue;
+                }
+
                 String[] book = null;
                 while(book == null){
                     book = getChapter(TOTALHTML.get(i));
+                    Thread.sleep(100);
                 }
                 ContentValues values = new ContentValues();
                 values.put("chapterName", book[0]);
                 values.put("novel", book[1]);
                 values.put("scrolled", 0);
-                values.put("website", "Piaotian");
-                values.put("TOTALHTML", TextUtils.join("|", TOTALHTML));
+                values.put("website", "CZbooks");
+                values.put("TOTALHTML", encode);
                 values.put("chapterUrl", TOTALHTML.get(i));
                 activity.getContentResolver().insert(download, values);
                 int progress = i + 1;

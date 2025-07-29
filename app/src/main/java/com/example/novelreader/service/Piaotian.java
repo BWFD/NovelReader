@@ -6,9 +6,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -23,7 +23,9 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import okhttp3.OkHttpClient;
@@ -36,6 +38,7 @@ public class Piaotian {
 
     private static Uri download = Uri.parse("content://com.example.novelreader.download/data");
 
+    private static int retrySec = 0;
 
     public static List<PiaotianClassification> getClassification(Context context) throws IOException {
         String url = "https://www.piaotia.com/";
@@ -312,6 +315,11 @@ public class Piaotian {
         }
         else {
             System.out.println("Request failed with code: " + response.code());
+            System.out.println(response.header("Retry-After"));
+            if(response.header("Retry-After") != null || !Objects.equals(response.header("Retry-After"), "0")) {
+                retrySec = Integer.parseInt(response.header("Retry-After"));
+            }
+            return null;
         }
 
         return book;
@@ -336,8 +344,10 @@ public class Piaotian {
         return document.select("a").get(1).attr("href");
     }
 
-    public static void download(Activity activity, ArrayList<String> TOTALHTML) throws Exception {
+    public static void download(Activity activity, String encode) throws Exception {
         NotificationManager notificationManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        String decode = StrZipUtil.uncompress(encode);
+        List<String> TOTALHTML = new ArrayList<>(List.of(decode.split("\\|")));
         int max = TOTALHTML.size();
         int NOTIFICATION_ID = 1001;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -354,16 +364,24 @@ public class Piaotian {
                 .setProgress(max, 1, false);
         try {
             for(int i=0;i<max;i++) {
+
+                Cursor cursor = activity.getContentResolver().query(download,null,"chapterUrl = ?",new String[]{TOTALHTML.get(i)},null);
+                if(cursor.getCount() > 0) {
+                    continue;
+                }
+
                 String[] book = null;
                 while(book == null){
                     book = getChapter(TOTALHTML.get(i));
+                    Thread.sleep(retrySec * 1000L);
                 }
+                retrySec = 0;
                 ContentValues values = new ContentValues();
                 values.put("chapterName", book[0]);
                 values.put("novel", book[1]);
                 values.put("scrolled", 0);
                 values.put("website", "Piaotian");
-                values.put("TOTALHTML", TextUtils.join("|", TOTALHTML));
+                values.put("TOTALHTML", encode);
                 values.put("chapterUrl", TOTALHTML.get(i));
                 activity.getContentResolver().insert(download, values);
                 int progress = i + 1;

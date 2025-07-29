@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -29,16 +28,19 @@ import com.example.novelreader.hjwzw.hjwzwBookInfoActivity;
 import com.example.novelreader.service.CZBooks;
 import com.example.novelreader.service.NetworkUtil;
 import com.example.novelreader.service.Piaotian;
+import com.example.novelreader.service.StrZipUtil;
 import com.example.novelreader.service.hjwzw;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ReaderActivity extends AppCompatActivity {
     Activity activity = this;
     private TextView title;
     private TextView textView;
-    private ArrayList<String> TOTALHTML;
+    private String TOTALHTML;
     private Button prevButton;
     private Button nextButton;
     private String[] book;
@@ -69,14 +71,6 @@ public class ReaderActivity extends AppCompatActivity {
         });
         disconnect = false;
 
-        if (!NetworkUtil.isNetworkAvailable(this)) {
-            Intent intent = new Intent(this, NetworkError.class);
-            startActivity(intent);
-            finish();
-            disconnect = true;
-            return;
-        }
-
         title = findViewById(R.id.bookTitle);
         textView = findViewById(R.id.chapterContext);
         prevButton = findViewById(R.id.prevButton);
@@ -88,7 +82,7 @@ public class ReaderActivity extends AppCompatActivity {
         this.webSite = getIntent().getStringExtra("webSite");
         if(isFirst) {
             this.url = getIntent().getStringExtra("currentHtml");
-            this.TOTALHTML = getIntent().getStringArrayListExtra("TOTALHTML");
+            this.TOTALHTML = getIntent().getStringExtra("TOTALHTML");
             isFirst = false;
         }
 
@@ -197,8 +191,15 @@ public class ReaderActivity extends AppCompatActivity {
 
 
         index = 0;
-        for(int i=0;i<TOTALHTML.size(); i++) {
-            if(TOTALHTML.get(i).equals(url)) {
+        String decode = null;
+        try {
+            decode = StrZipUtil.uncompress(TOTALHTML);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        List<String> htmlArray = new ArrayList<>(List.of(decode.split("\\|")));
+        for(int i=0;i<htmlArray.size(); i++) {
+            if(htmlArray.get(i).equals(url)) {
                 index = i;
                 break;
             }
@@ -208,8 +209,8 @@ public class ReaderActivity extends AppCompatActivity {
 
             nextButton.setOnClickListener(view -> {
                 Intent intent = new Intent(activity,ReaderActivity.class);
-                intent.putExtra("currentHtml", TOTALHTML.get(index + 1));
-                intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
+                intent.putExtra("currentHtml", htmlArray.get(index + 1));
+                intent.putExtra("TOTALHTML",TOTALHTML);
                 intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                 intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                 intent.putExtra("webSite",webSite);
@@ -220,13 +221,13 @@ public class ReaderActivity extends AppCompatActivity {
             });
         }
         else
-        if(index == TOTALHTML.size() -1 ){
+        if(index == htmlArray.size() -1 ){
             nextButton.setBackgroundColor(Color.WHITE);
 
             prevButton.setOnClickListener(view -> {
                 Intent intent = new Intent(activity,ReaderActivity.class);
-                intent.putExtra("currentHtml", TOTALHTML.get(index - 1));
-                intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
+                intent.putExtra("currentHtml", htmlArray.get(index - 1));
+                intent.putExtra("TOTALHTML",TOTALHTML);
                 intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                 intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                 intent.putExtra("webSite",webSite);
@@ -239,8 +240,8 @@ public class ReaderActivity extends AppCompatActivity {
         else {
             nextButton.setOnClickListener(view -> {
                 Intent intent = new Intent(activity,ReaderActivity.class);
-                intent.putExtra("currentHtml", TOTALHTML.get(index + 1));
-                intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
+                intent.putExtra("currentHtml", htmlArray.get(index + 1));
+                intent.putExtra("TOTALHTML",TOTALHTML);
                 intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                 intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                 intent.putExtra("webSite",webSite);
@@ -252,8 +253,8 @@ public class ReaderActivity extends AppCompatActivity {
 
             prevButton.setOnClickListener(view -> {
                 Intent intent = new Intent(activity,ReaderActivity.class);
-                intent.putExtra("currentHtml", TOTALHTML.get(index - 1));
-                intent.putStringArrayListExtra("TOTALHTML",TOTALHTML);
+                intent.putExtra("currentHtml", htmlArray.get(index - 1));
+                intent.putExtra("TOTALHTML",TOTALHTML);
                 intent.putExtra("isInBookMark",getIntent().getStringExtra("isInBookMark"));
                 intent.putExtra("bookName",getIntent().getStringExtra("bookName"));
                 intent.putExtra("webSite",webSite);
@@ -271,7 +272,14 @@ public class ReaderActivity extends AppCompatActivity {
             updateBookFromDatabase(cursor);
         }
         else {
-        updateBookFormService(url);
+            if (!NetworkUtil.isNetworkAvailable(this)) {
+                Intent intent = new Intent(this, NetworkError.class);
+                startActivity(intent);
+                finish();
+                disconnect = true;
+                return;
+            }
+            updateBookFormService(url);
         }
     }
 
@@ -375,7 +383,7 @@ public class ReaderActivity extends AppCompatActivity {
             values.put("webSite",webSite);
             values.put("chapterName",book[0]);
             values.put("chapterUrl",url);
-            values.put("TOTALHTML", TextUtils.join("|", TOTALHTML));
+            values.put("TOTALHTML", TOTALHTML);
             values.put("scrolled",scrollView.getScrollY());
 
             activity.getContentResolver().insert(uri,values);
