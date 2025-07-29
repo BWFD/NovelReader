@@ -126,6 +126,12 @@ public class BookMarkFragment extends Fragment {
                     TOTALHTML = cursor.getString(index);
                 }
 
+                //顯示預載
+                Cursor downloadCursor = getContext().getContentResolver().query(download, null, "TOTALHTML = ?", new String[]{TOTALHTML}, null);
+                if(downloadCursor.getCount() > 0) {
+                    button.setText(text.replace(" － ", "(預載) － "));
+                }
+
                 index = cursor.getColumnIndex("Scrolled");
                 if (index != -1) {
                     scrolled = cursor.getInt(index);
@@ -200,6 +206,7 @@ public class BookMarkFragment extends Fragment {
                             getContext().getContentResolver().delete(download,"TOTALHTML = ?", new String[]{finalTOTALHTML});
                             getContext().getContentResolver().notifyChange(download, null);
                             Toast.makeText(getContext(), "已刪除預載", Toast.LENGTH_SHORT).show();
+                            bookmarkList.invalidate();
                             return true;
                         }
                         else {
