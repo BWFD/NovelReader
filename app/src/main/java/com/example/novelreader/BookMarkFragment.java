@@ -206,7 +206,6 @@ public class BookMarkFragment extends Fragment {
                             getContext().getContentResolver().delete(download,"TOTALHTML = ?", new String[]{finalTOTALHTML});
                             getContext().getContentResolver().notifyChange(download, null);
                             Toast.makeText(getContext(), "已刪除預載", Toast.LENGTH_SHORT).show();
-                            bookmarkList.invalidate();
                             return true;
                         }
                         else {

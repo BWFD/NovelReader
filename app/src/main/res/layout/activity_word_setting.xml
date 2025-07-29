@@ -39,7 +39,7 @@
         android:layout_marginEnd="75dp"
 
         android:max="49"
-        android:progress="1"/>
+        android:progress="0"/>
 
     <TextView
         android:id="@+id/SizeValue"

@@ -77,8 +77,9 @@ public class WordSettingActivity extends AppCompatActivity {
         sizeSelect.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-               preview.setTextSize(15 + i);
-               sizeValue.setText(String.valueOf(i + 1));
+                System.out.println(i);
+                preview.setTextSize(16 + i);
+                sizeValue.setText(String.valueOf(i + 1));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -143,7 +144,7 @@ public class WordSettingActivity extends AppCompatActivity {
 
         confirm_button.setOnClickListener(view -> {
             ContentValues values = new ContentValues();
-            int Size = Integer.parseInt(String.valueOf(sizeSelect.getProgress())) +15;
+            int Size = Integer.parseInt(String.valueOf(sizeSelect.getProgress())) + 15;
             values.put("textSize",String.valueOf(Size));
             values.put("textColor",String.format("#%02X%02X%02X", r, g, b));
             String[] selectionArgs = new String[]{"only"};
@@ -151,13 +152,22 @@ public class WordSettingActivity extends AppCompatActivity {
 
             finish();
         });
-
+        /*
+        SizeValue = sizeSelect.getProgress() + 1
+        preview.setTextSize(16 + SizeValue)
+         */
         textIncrease.setOnClickListener(view -> {
-            sizeSelect.setProgress(sizeSelect.getProgress() + 1);
+            int size = sizeSelect.getProgress();
+            if(size >= 49) return;
+            size++;
+            sizeSelect.setProgress(size);
         });
 
         textDecrease.setOnClickListener(view -> {
-            sizeSelect.setProgress(sizeSelect.getProgress() - 1);
+            int size = sizeSelect.getProgress();
+            if(size <= 0) return;
+            size--;
+            sizeSelect.setProgress(size);
         });
     }
 
