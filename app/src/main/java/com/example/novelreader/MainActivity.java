@@ -1,6 +1,8 @@
 package com.example.novelreader;
 
 import android.Manifest;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -70,5 +72,12 @@ public class MainActivity extends AppCompatActivity {
                 tab.setCustomView(textView);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(1001);
     }
 }
