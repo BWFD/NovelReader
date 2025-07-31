@@ -311,6 +311,15 @@ public class ReaderActivity extends AppCompatActivity {
                 cursor.close();
                 loading.setText("");
                 loading.setVisibility(View.INVISIBLE);
+
+                ContentValues values = new ContentValues();
+                values.put("chapterName",book[0]);
+                values.put("chapterUrl",url);
+                values.put("scrolled",scrollView.getScrollY());
+                String[] selectionArgs = new String[]{String.valueOf(getIntent().getLongExtra("id",-1))};
+
+                getContentResolver().update(uri, values, "_id = ?",selectionArgs);
+                getContentResolver().notifyChange(uri, null);
             });
         }).start();
     }
