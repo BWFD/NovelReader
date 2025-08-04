@@ -222,6 +222,11 @@ public class hjwzw {
         builder.setOngoing(true);
         try {
             for(int i=0;i<max;i++) {
+                int progress = i + 1;
+                builder.setContentText("進度：" + progress + "/" + max);
+                Log.d("Progress", "Progress: " + progress + "/" + max);
+                builder.setProgress(max, progress, false);
+                notificationManager.notify(NOTIFICATION_ID, builder.build());
 
                 Cursor cursor = activity.getContentResolver().query(download,null,"chapterUrl = ?",new String[]{TOTALHTML.get(i)},null);
                 if(cursor.getCount() > 0) {
@@ -243,17 +248,12 @@ public class hjwzw {
                 values.put("TOTALHTML", encode);
                 values.put("chapterUrl", TOTALHTML.get(i));
                 activity.getContentResolver().insert(download, values);
-                int progress = i + 1;
-                builder.setContentText("進度：" + progress + "/" + max);
-                Log.d("Progress", "Progress: " + progress + "/" + max);
-                builder.setProgress(max, progress, false);
-                notificationManager.notify(NOTIFICATION_ID, builder.build());
             }
             builder.setContentText("預載完成")
                     .setProgress(0, 0, false)
                     .setSmallIcon(android.R.drawable.stat_sys_download_done);
-            notificationManager.notify(NOTIFICATION_ID, builder.build());
             builder.setOngoing(false);
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
         } catch (Exception e) {
             builder.setOngoing(false);
             throw new Exception("預載失敗");
